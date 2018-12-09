@@ -298,4 +298,26 @@ print(res3)
 ### Cigarettes consumption over all period 
 
 ### Mode usage over all period
+Mode_Usage <- function(inputPerson, inputMode){
+  nb_days <- length(unique(dflog$TimeInput[which(dflog$User == inputPerson & dflog$Type == inputMode)]))
+  #List of the days WARNING first element at indice 1
+  all_days <- unique(dflog$TimeInput[which(dflog$User == inputPerson & dflog$Type == inputMode)])
+  result <- c()
+  
+  for (i in 1:nb_days){
+    print(all_days[i])
+    dfWeek <- dflog$Type[which(dflog$User == inputPerson & dflog$TimeInput== all_days[i] & dflog$Type == inputMode)]
+    
+    sum_usages <-0
+    sum_usages <- sum_usages + length(dfWeek)
+    result <- c(result, sum_usages)
+    
+  }
+  Final_result<-list( result, all_days) 
+  return(Final_result)
+}
+
+Mode_res<- Mode_Usage ("Baptiste Mallet", "Cheated")
+print(Mode_res[[1]][1])
+print(Mode_res[[2]][1])
 
