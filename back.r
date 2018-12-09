@@ -154,7 +154,8 @@ dflog$MinuteInput <- minute(dflog$TimeFormat)
 
 
 
-stat_day <- function(weekday , dfWeek){
+stat_day <- function(weekday , dfWeek ){
+  
   result <- c()
   result <-c(length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 0 & dfWeek$HourInput < 2)]),
              length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 2 & dfWeek$HourInput < 4)]),
@@ -175,11 +176,12 @@ Cigarette_perWD_perTS <- function(inputWeek, inputPerson){
   result <- c()
   
   if (inputWeek ==0){
-    #in case we are in behavior week 
     dfWeek <- dflog[which(dflog$User == inputPerson & dflog$Week == inputWeek & dflog$Type == "Behaviour"),]
-    monday <- stat_day(1, dfWeek)
+    
+    #in case we are in behavior week 
+    monday <- stat_day(1, dfWeek )
     tuesday <- stat_day(2, dfWeek)
-    wednesday<- stat_day(3, dfWeek)
+    wednesday<- stat_day(3 , dfWeek)
     thursday <- stat_day(4, dfWeek)
     friday <- stat_day(5, dfWeek)
     saturday <- stat_day(6, dfWeek)
@@ -188,8 +190,9 @@ Cigarette_perWD_perTS <- function(inputWeek, inputPerson){
     result <- c(monday, tuesday, wednesday, thursday, friday, saturday, sunday )
     
   }else{
+    
     dfWeek <- dflog[which(dflog$User == inputPerson & dflog$Week == inputWeek & (dflog$Type == "Cheated" | dflog$Type == "On time")),]
-    print(dfWeek)
+    
     monday <- stat_day(1, dfWeek)
     tuesday <- stat_day(2, dfWeek)
     wednesday<- stat_day(3, dfWeek)
@@ -206,11 +209,32 @@ Cigarette_perWD_perTS <- function(inputWeek, inputPerson){
 }
 
 #If you want to test it
-resultat <- Cigarette_perWD_perTS(1, "Armel Duret")
+resultat <- Cigarette_perWD_perTS(0, "Armel Duret")
 print(resultat)
 
 ### Comparision of cigarettes consumption between weeks
-
+Consumption_Between_Weeks <- function(inputPerson){
+  nb_weeks <- length(unique(dflog$Week[which(dflog$User == inputPerson)]))
+  result <- c()
+  
+  for (i in 0:(nb_weeks-1)){
+    avg <- 0
+    if (i == 0){
+      dfWeek <- dflog[which(dflog$User == inputPerson & dflog$Week == i & dflog$Type == "Behaviour"),]
+    }else{
+      dfWeek <- dflog[which(dflog$User == inputPerson & dflog$Week == i & (dflog$Type == "Cheated" | dflog$Type == "On time")),]
+    }
+    sum_week <-0
+    for (d in 1:7){
+      sum_week <- sum_week + sum(stat_day(d,dfWeek ))
+    }
+    avg <- round(sum_week/7)
+    result <- c(result, avg)
+  }
+  return(result)
+}
+res <- Consumption_Between_Weeks("Armel Duret")
+print(res)
 ### Mode usage per week 
 
 ### Cigarette Consumption per weekday
@@ -222,5 +246,4 @@ print(resultat)
 ### Cigarettes consumption over all period 
 
 ### Mode usage over all period
-
 
