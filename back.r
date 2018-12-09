@@ -143,3 +143,84 @@ Progress <- progressfunction(inputWeek,inputPerson)
 
 #### Rate of progress
 ProgressRate <- progressratefunction(inputWeek,inputPerson)
+
+### 3 Week Tab
+### Cigarettes per weekday per time slots
+### TIME FORMAT
+dflog$TimeInput <-as.Date(dflog$Time, format('%d/%m/%Y %H:%M'))
+dflog$TimeFormat <-dmy_hm(dflog$Time)
+dflog$HourInput <-hour(dflog$TimeFormat)
+dflog$MinuteInput <- minute(dflog$TimeFormat)
+
+
+
+stat_day <- function(weekday , dfWeek){
+  result <- c()
+  result <-c(length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 0 & dfWeek$HourInput < 2)]),
+             length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 2 & dfWeek$HourInput < 4)]),
+             length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 4 & dfWeek$HourInput < 6)]),
+             length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 6 & dfWeek$HourInput < 8)]),
+             length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 8 & dfWeek$HourInput< 10)]),
+             length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 10 & dfWeek$HourInput < 12)]),
+             length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 12 & dfWeek$HourInput < 14)]),
+             length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 14 & dfWeek$HourInput < 16)]),
+             length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 16 & dfWeek$HourInput < 18)]),
+             length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 18 & dfWeek$HourInput < 20)]),
+             length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 20 & dfWeek$HourInput < 22)]),
+             length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 22 & dfWeek$HourInput < 0)]))
+  return(result)
+}
+
+Cigarette_perWD_perTS <- function(inputWeek, inputPerson){
+  result <- c()
+  
+  if (inputWeek ==0){
+    #in case we are in behavior week 
+    dfWeek <- dflog[which(dflog$User == inputPerson & dflog$Week == inputWeek & dflog$Type == "Behaviour"),]
+    monday <- stat_day(1, dfWeek)
+    tuesday <- stat_day(2, dfWeek)
+    wednesday<- stat_day(3, dfWeek)
+    thursday <- stat_day(4, dfWeek)
+    friday <- stat_day(5, dfWeek)
+    saturday <- stat_day(6, dfWeek)
+    sunday <- stat_day(7, dfWeek)
+    
+    result <- c(monday, tuesday, wednesday, thursday, friday, saturday, sunday )
+    
+  }else{
+    dfWeek <- dflog[which(dflog$User == inputPerson & dflog$Week == inputWeek & (dflog$Type == "Cheated" | dflog$Type == "On time")),]
+    print(dfWeek)
+    monday <- stat_day(1, dfWeek)
+    tuesday <- stat_day(2, dfWeek)
+    wednesday<- stat_day(3, dfWeek)
+    thursday <- stat_day(4, dfWeek)
+    friday <- stat_day(5, dfWeek)
+    saturday <- stat_day(6, dfWeek)
+    sunday <- stat_day(7, dfWeek)
+    
+    result <- c(monday, tuesday, wednesday, thursday, friday, saturday, sunday )
+  }
+  
+  matrix_res <- matrix(result, nrow=7, ncol=12, byrow=T)
+  return(matrix_res)
+}
+
+#If you want to test it
+resultat <- Cigarette_perWD_perTS(1, "Armel Duret")
+print(resultat)
+
+### Comparision of cigarettes consumption between weeks
+
+### Mode usage per week 
+
+### Cigarette Consumption per weekday
+
+### 4 Engagement tab 
+### Engagement over all period 
+
+### 5 All days Tab
+### Cigarettes consumption over all period 
+
+### Mode usage over all period
+
+
