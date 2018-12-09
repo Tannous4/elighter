@@ -255,6 +255,41 @@ res2 <- Consumption_Between_Weeks("Baptiste Mallet", "Cheated")
 print(res2)
 
 ### Cigarette Consumption per weekday
+Cigarette_Consumption_perWD <- function(inputWeek, inputPerson) {
+  result <- c()
+  
+  if (inputWeek ==0){
+    dfWeek <- dflog[which(dflog$User == inputPerson & dflog$Week == inputWeek & dflog$Type == "Behaviour"),]
+    
+    #in case we are in behavior week 
+    monday <- sum(stat_day(1, dfWeek ))
+    tuesday <- sum(stat_day(2, dfWeek))
+    wednesday<- sum(stat_day(3 , dfWeek))
+    thursday <- sum(stat_day(4, dfWeek))
+    friday <- sum(stat_day(5, dfWeek))
+    saturday <- sum(stat_day(6, dfWeek))
+    sunday <- sum(stat_day(7, dfWeek))
+    
+    result <- c(monday, tuesday, wednesday, thursday, friday, saturday, sunday )
+    
+  }else{
+    
+    dfWeek <- dflog[which(dflog$User == inputPerson & dflog$Week == inputWeek & (dflog$Type == "Cheated" | dflog$Type == "On time")),]
+    
+    monday <- sum(stat_day(1, dfWeek))
+    tuesday <- sum(stat_day(2, dfWeek))
+    wednesday<- sum(stat_day(3, dfWeek))
+    thursday <- sum(stat_day(4, dfWeek))
+    friday <- sum(stat_day(5, dfWeek))
+    saturday <- sum(stat_day(6, dfWeek))
+    sunday <- sum(stat_day(7, dfWeek))
+    
+    result <- c(monday, tuesday, wednesday, thursday, friday, saturday, sunday )
+  }
+  return(result)
+}
+res3 <- Cigarette_Consumption_perWD(1, "Armel Duret")
+print(res3) 
 
 ### 4 Engagement tab 
 ### Engagement over all period 
