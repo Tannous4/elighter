@@ -235,7 +235,24 @@ Consumption_Between_Weeks <- function(inputPerson){
 }
 res <- Consumption_Between_Weeks("Armel Duret")
 print(res)
+
 ### Mode usage per week 
+Consumption_Between_Weeks <- function(inputPerson, inputMode){
+  nb_weeks <- length(unique(dflog$Week[which(dflog$User == inputPerson)]))
+  result <- c()
+  
+  for (i in 0:(nb_weeks-1)){
+    dfWeek <- dflog[which(dflog$User == inputPerson & dflog$Week == i & dflog$Type == inputMode),]
+    sum_week <-0
+    for (d in 1:7){
+      sum_week <- sum_week + sum(stat_day(d,dfWeek ))
+    }
+    result <- c(result, sum_week)
+  }
+  return(result)
+}
+res2 <- Consumption_Between_Weeks("Baptiste Mallet", "Cheated")
+print(res2)
 
 ### Cigarette Consumption per weekday
 
