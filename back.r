@@ -293,6 +293,37 @@ print(res3)
 
 ### 4 Engagement tab 
 ### Engagement over all period 
+### Engagement per day
+Engagement_perDay <- function(inputPerson){
+  nb_days <- length(unique(dflog$TimeInput[which(dflog$User == inputPerson)]))
+  #List of the days WARNING first element at indice 1
+  all_days <- unique(dflog$TimeInput[which(dflog$User == inputPerson)])
+  result <- c()
+  
+  for (i in 1:nb_days){
+    dfWeek <- dflog[which(dflog$User == inputPerson & dflog$TimeInput== all_days[i]),]
+    if(dfWeek$Week >=1){
+      nb_autoskip <- length(dfWeek$Type[which(dfWeek$Type == "Auto skipped")])
+      normalize <- length(dfWeek$Type[which(dfWeek$Type == "Auto skipped" | dfWeek$Type == "On time" | dfWeek$Type == "Skipped" | dfWeek$Type == "Snoozed")]) 
+      print(all_days[i])
+      if(normalize != 0){
+        engagement <- 1-(nb_autoskip/normalize)
+        result <- c(result, engagement )
+      }else{
+        result <- c(result, 0)#the user doesn't use the lighter at all
+      }
+    } else {
+      result <- c(result, 0)# when we are in behaviour mode
+    }
+  }
+  Final_result<-list( result, all_days) 
+  return(Final_result)
+}
+engagement_day_res<- Engagement_perDay ("Baptiste Mallet")
+print(engagement_day_res)
+print(length(engagement_day_res[[1]]))
+print(engagement_day_res[[1]][1])
+print(engagement_day_res[[2]][1])
 
 ### 5 All days Tab
 ### Cigarettes consumption over all period 
