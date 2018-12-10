@@ -427,3 +427,53 @@ Mode_res<- Mode_Usage ("Baptiste Mallet", "Cheated")
 print(Mode_res[[1]][1])
 print(Mode_res[[2]][1])
 
+### ALL USER PART
+#------------------------------------------------------------------------------------------
+### 1. Information Tab
+### Total Number of saved cigarettes
+total_number_of_cigarettes_saved <- function(){
+  nb_users <- length(unique(dflog$User))
+  all_users <- unique(dflog$User)
+  sum_cig_saved <-0
+  for (i in 1:nb_users){
+    sum_cig_saved <- sum_cig_saved + CigarettesSaved(all_users[i])
+  }
+  return(sum_cig_saved)
+}
+Total_number_of_saved_cigarettes<-total_number_of_cigarettes_saved()
+print(Total_number_of_saved_cigarettes)
+
+### Total Number of Money saved 
+total_number_of_money_saved <- function(){
+  nb_users <- length(unique(dflog$User))
+  all_users <- unique(dflog$User)
+  sum_money_saved <-0
+  for (i in 1:nb_users){
+    sum_money_saved <- sum_money_saved + MoneySaved(all_users[i])
+  }
+  return(sum_money_saved)
+}
+Total_number_of_saved_money<-total_number_of_money_saved()
+print(Total_number_of_saved_money)
+
+### Avg number of saved cigarettes
+avg_nb_cig <- function (){
+  nb_users <- length(unique(dflog$User))
+  total<-total_number_of_money_saved()
+  
+  avg <- round(total/nb_users)
+  return(avg)
+}
+avg_cig_saved <- avg_nb_cig()
+print(avg_cig_saved)
+
+### Average amount of money saved 
+avg_money <- function (){
+  nb_users <- length(unique(dflog$User))
+  total<-total_number_of_money_saved ()
+  
+  avg <- round(total/nb_users)
+  return(avg)
+}
+avg_money_saved <- avg_money()
+print(avg_money_saved )
