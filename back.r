@@ -536,6 +536,25 @@ avg_progress <- avg_progress_all_user ()
 print(avg_progress)
 
 ### Cigarettes per weekday per time slots
+cigarettes_per_WDAY_per_TS <- function(){
+  nb_weeks<- length(unique(dflog$Week))
+  all_weeks <- unique(dflog$Week)
+  
+  nb_users <- length(unique(dflog$User))
+  all_users <- unique(dflog$User)
+  result <-  matrix (rep(0, 7*12), 7, 12)
+  
+  for (i in 1:nb_weeks){
+    for (u in 1:nb_users){
+      week_consumption <- Cigarette_perWD_perTS(all_weeks[i], all_users[u])
+      result <- result + week_consumption 
+    }
+  }
+  return(result) 
+}
+Cig_per_WDAY_per_TS_res <- cigarettes_per_WDAY_per_TS()
+print(Cig_per_WDAY_per_TS_res)
+
 ### Average rate of progress of all users
 
 ### 3. Engagement 
