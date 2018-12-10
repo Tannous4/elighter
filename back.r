@@ -477,3 +477,43 @@ avg_money <- function (){
 }
 avg_money_saved <- avg_money()
 print(avg_money_saved )
+
+### 2. Classic
+### Mean and std of cigarette consumption per weekday
+### Average progress of all users
+### Cigarettes per weekday per time slots
+### Average rate of progress of all users
+
+### 3. Engagement 
+### Engagement over all period
+total_engagement_all_user <- function (){
+  nb_weeks<- length(unique(dflog$Week))
+  all_weeks <- unique(dflog$Week)
+  
+  nb_users <- length(unique(dflog$User))
+  all_users <- unique(dflog$User)
+  avg <- c()
+  for (i in 1:nb_weeks){
+    nb_user_tmp <- 0
+    sum_engagement <- 0
+    for (u in 1:nb_users){
+      engagement_week_res<- Engagement_perWeek (all_users[u])
+      print(engagement_week_res)
+      if(i <= length(engagement_week_res[[1]])){
+        nb_user_tmp <- nb_user_tmp + 1
+        sum_engagement <- sum_engagement + engagement_week_res[[1]][i]
+      }
+      
+    }
+    avg_week <- sum_engagement/nb_user_tmp
+    avg <- c(avg, avg_week)
+    
+  }
+  print(length(avg))
+  result <- data.frame("AvgEngagement"= avg , "Week"= all_weeks)
+  
+}
+
+engagement <- total_engagement_all_user ()
+print(engagement)
+
