@@ -498,6 +498,36 @@ print(avg_money_saved )
 ### Mean and std of cigarette consumption per weekday
 
 ### Average progress of all users
+avg_progress_all_user <- function (){
+  nb_weeks<- length(unique(dflog$Week))
+  all_weeks <- unique(dflog$Week)
+  
+  nb_users <- length(unique(dflog$User))
+  all_users <- unique(dflog$User)
+  avg <- c()
+  for (i in 1:nb_weeks){
+    nb_user_tmp <- 0
+    sum_progress <- 0
+    for (u in 1:nb_users){
+      res_pro <- progress_over_all_period(all_users[u])
+      if(i <= length(res_pro$Week)){
+        nb_user_tmp <- nb_user_tmp + 1
+        sum_progress  <- sum_progress + res_pro$Progress[i]
+      }
+      
+    }
+    avg_week <- sum_progress /nb_user_tmp
+    avg <- c(avg, avg_week)
+    
+  }
+  print(length(avg))
+  result <- data.frame("Avgprogress"= avg , "Week"= all_weeks)
+  
+}
+
+avg_progress <- avg_progress_all_user ()
+print(avg_progress)
+
 ### Cigarettes per weekday per time slots
 ### Average rate of progress of all users
 
