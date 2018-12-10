@@ -115,3 +115,11 @@ EngagementPerDay <- Engagement_perDay (dflog, inputPerson)
 ### Engagement per week
 
 EngagementPerWeek<- EngagementPerWeek (dfstats, inputPerson)
+
+## All days Tab
+### Cigarettes consumption over all period 
+
+CigarettesConsumptionOverAllPeriod <- Consumption_Over_All_Period (dflog, inputPerson)
+
+### Mode usage over all period
+ModeUsageOverAllPeriod<- Mode_Usage (dflog, inputPerson, inputMode)
