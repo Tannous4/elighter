@@ -154,6 +154,22 @@ StdWD <- sd(stdlist)
 
 Progress <- progressfunction(inputWeek,inputPerson)
 
+progress_over_all_period <- function(inputPerson){
+  nb_weeks<- length(unique(dflog$Week[which(dflog$User == inputPerson)]))
+  all_weeks <- unique(dflog$Week[which(dflog$User == inputPerson)])
+  
+  progress <- c()
+  for (i in 1:nb_weeks){
+    tmp_progress<- progressfunction(all_weeks[i], inputPerson)
+    progress <- c(progress, tmp_progress)
+  }
+  result <- data.frame("Progress"= progress , "Week"= all_weeks)
+  return(result)
+}
+
+res_pro <- progress_over_all_period("Renaud Courbis")
+print(res_pro)
+
 #### Rate of progress
 ProgressRate <- progressratefunction(inputWeek,inputPerson)
 
@@ -480,6 +496,7 @@ print(avg_money_saved )
 
 ### 2. Classic
 ### Mean and std of cigarette consumption per weekday
+
 ### Average progress of all users
 ### Cigarettes per weekday per time slots
 ### Average rate of progress of all users
