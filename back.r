@@ -19,9 +19,11 @@ progressfunction <- function(inputWeek, inputPerson){
   }
   if(conditionWeek > 2){
     temp <- length(which(dflog$User == inputPerson & (dflog$Type == "On time" | dflog$Type == "Cheated") & (dflog$Week == inputWeek-1 | dflog$Week == inputWeek-2 | dflog$Week == inputWeek-3)))/3
-    result <- ((temp
-                - length(which(dflog$User == inputPerson & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$Week == inputWeek)))
-               / temp)
+    if(temp > 0){
+      result <- ((temp
+                  - length(which(dflog$User == inputPerson & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$Week == inputWeek)))
+                 / temp)
+    }
   }
   if(result < 0.001){
     result<-0
