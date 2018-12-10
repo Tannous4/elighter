@@ -19,6 +19,10 @@ for(name in unique(dflog$User)){
 
 # Week Day
 dflog$WDay <- wday(dflog$Date)
+dflog$TimeInput <-as.Date(dflog$Time, format('%d/%m/%Y %H:%M'))
+dflog$TimeFormat <-dmy_hm(dflog$Time)
+dflog$HourInput <-hour(dflog$TimeFormat)
+dflog$MinuteInput <- minute(dflog$TimeFormat)
 
 dfstats<-dflog[,c("User","Week")]
 dfstats$temp<-1
