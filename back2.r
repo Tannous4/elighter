@@ -47,6 +47,7 @@ dfstats<-progressratefunction(dfstats)
 
 inputWeek <- 4
 inputPerson <- "Abel Sharpe"
+inputMode <- "Cheated"
 
 #Single User
 ##################################################################################
@@ -86,3 +87,20 @@ MeanPerWeekDay<-meanweekday(dflog,inputPerson)
 ### Mean Per WEnd
 
 MeanPerWeekEnd<-meanweekend(dflog,inputPerson)
+
+## Week Tab
+### Cigarettes per weekday per time slot
+
+CigarettePerWeekdayPerTimeSlot <- Cigarette_perWD_perTS(dflog, inputWeek , inputPerson)
+
+### Comparision of cigarettes consumption between weeks
+
+ConsumptionBetweenWeeks <- Consumption_Between_Weeks(dflog, inputPerson)
+
+### Mode usage per week 
+
+ModeUsagePerWeek <- Consumption_Between_Weeks(dflog, inputPerson, inputMode)
+
+### Cigarette Consumption per weekday
+
+CigaretteConsumptionPerWeekday <- Cigarette_Consumption_perWD(dflog, inputWeek, inputPerson)
