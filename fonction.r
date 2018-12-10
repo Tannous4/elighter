@@ -446,3 +446,46 @@ Mode_Usage <- function(dflog,inputPerson, inputMode){
   Final_result<- data.frame("Day"= all_days, "ModeNumber"=result) 
   return(Final_result)
 }
+
+#All Users
+##################################################################################
+### 1. Information Tab
+### Total Number of saved cigarettes
+total_number_of_cigarettes_saved <- function(dflog){
+  nb_users <- length(unique(dflog$User))
+  all_users <- unique(dflog$User)
+  sum_cig_saved <-0
+  for (i in 1:nb_users){
+    sum_cig_saved <- sum_cig_saved + CigarettesSaved(all_users[i])
+  }
+  return(sum_cig_saved)
+}
+
+### Total Number of Money saved 
+total_number_of_money_saved <- function(dflog){
+  nb_users <- length(unique(dflog$User))
+  all_users <- unique(dflog$User)
+  sum_money_saved <-0
+  for (i in 1:nb_users){
+    sum_money_saved <- sum_money_saved + MoneySaved(all_users[i])
+  }
+  return(sum_money_saved)
+}
+
+### Avg number of saved cigarettes
+avg_nb_cig <- function (dflog){
+  nb_users <- length(unique(dflog$User))
+  total<-total_number_of_money_saved()
+  
+  avg <- round(total/nb_users)
+  return(avg)
+}
+
+### Average amount of money saved 
+avg_money <- function (dflog){
+  nb_users <- length(unique(dflog$User))
+  total<-total_number_of_money_saved ()
+  
+  avg <- round(total/nb_users)
+  return(avg)
+}
