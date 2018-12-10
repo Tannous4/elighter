@@ -28,7 +28,6 @@ Engagement_perWeek <- function(df,user){
 nbcigarettes<-function(dflog,dfstats){
   for(user in unique(dfstats$User)){
     for(week in unique(dfstats$Week[which(dfstats$User == user)])){
-      print(length(which(dflog$User == user & (dflog$Type == "On time" | dflog$Type == "Cheated" | dflog$Type == "Behaviour") & dflog$Week == week)))
       dfstats$nbcig[which(dfstats$User == user & dfstats$Week == week)]<-length(which(dflog$User == user & (dflog$Type == "On time" | dflog$Type == "Cheated" | dflog$Type == "Behaviour") & dflog$Week == week))
     }
   }
@@ -77,6 +76,7 @@ progressfunction <- function(dfstats){
   return(dfstats)
 }
 
+# progress rate
 progressratefunction <- function(dfstats){
   for(name in unique(dfstats$User)){
     for(week in dfstats$Week[which(dfstats$User == name)]){
@@ -100,3 +100,63 @@ progressratefunction <- function(dfstats){
   }
   return(dfstats)
 }
+
+#Cigarettes Saved
+CigarettesSaved <- function (dfstats,inputPerson){
+  result<-c()
+  for(w in unique(dfstats$Week[which(dfstats$User == inputPerson)])){
+    result<-c(result, dfstats$nbcig[which(dfstats$User == inputPerson & dfstats$Week == 0)] - dfstats$nbcig[which(dfstats$User == inputPerson & dfstats$Week == w)])
+  }
+  result<-sum(result)
+  return (result)
+}
+
+#Overall Progress Average
+overallprogress <- function(dfstats, inputPerson){
+  return(mean(dfstats$progress[which(dfstats$User == inputPerson & dfstats$Week != 0)]))
+}
+
+overallprogresscgy <- function(dfstats, inputPerson){
+  op<-overallprogress(dfstats, inputPerson)
+  opcgy <- "nothing"
+  if(op <= 0.2){
+    opcgy<-"Low"
+  }else if(op >= 0.5){
+    opcgy<-"High"
+  }else{
+    opcgy<-"Medium"
+  }
+  return(opcgy)
+}
+
+#Overall Engagement Average
+overallengagement <- function(dfstats, inputPerson){
+  return(mean(dfstats$engagement[which(dfstats$User == inputPerson & dfstats$Week != 0)]))
+}
+
+#Best Rate of Progress
+bestprogressrate <- function(dfstats, inputPerson){
+  return(max(dfstats$progressrate[which(dfstats$User == inputPerson & dfstats$Week != 0)]))
+}
+
+#Mean Per Day
+meanperday<-function(dflog,inputPerson){
+  dfsub<-dflog[which(dflog$User == inputPerson & (dflog$Type == "On time" | dflog$Type == "Cheated" | dflog$Type == "Behaviour")),]
+  mpd<-length(dfsub$User)/length(unique(dfsub$Date))
+  return(mpd)
+}
+
+#Mean Per Week Day
+meanweekday<-function(dflog,inputPerson){
+  dfsub<-dflog[which(dflog$User == inputPerson & (dflog$Type == "On time" | dflog$Type == "Cheated" | dflog$Type == "Behaviour") & dflog$WDay < 6),]
+  mpd<-length(dfsub$User)/length(unique(dfsub$Date))
+  return(mpd)
+}
+
+#Mean Per Week Ends
+meanweekend<-function(dflog,inputPerson){
+  dfsub<-dflog[which(dflog$User == inputPerson & (dflog$Type == "On time" | dflog$Type == "Cheated" | dflog$Type == "Behaviour") & dflog$WDay > 5),]
+  mpd<-length(dfsub$User)/length(unique(dfsub$Date))
+  return(mpd)
+}
+
