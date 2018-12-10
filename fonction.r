@@ -160,6 +160,81 @@ meanweekend<-function(dflog,inputPerson){
   return(mpd)
 }
 
+# Most Smoking Intensity Slot
+mostsmokingslot <- function(dflog, inputPerson){
+  result <- c()
+  result <-c(length(which(dflog$User == inputPerson & dflog$HourInput >= 0 & dflog$HourInput < 2))/length(unique(dflog$Date[which(dflog$User == inputPerson & dflog$HourInput >= 0 & dflog$HourInput < 2)])),
+             length(which(dflog$User == inputPerson & dflog$HourInput >= 2 & dflog$HourInput < 4))/length(unique(dflog$Date[which(dflog$User == inputPerson & dflog$HourInput >= 2 & dflog$HourInput < 4)])),
+             length(which(dflog$User == inputPerson & dflog$HourInput >= 4 & dflog$HourInput < 6))/length(unique(dflog$Date[which(dflog$User == inputPerson & dflog$HourInput >= 4 & dflog$HourInput < 6)])),
+             length(which(dflog$User == inputPerson & dflog$HourInput >= 6 & dflog$HourInput < 8))/length(unique(dflog$Date[which(dflog$User == inputPerson & dflog$HourInput >= 6 & dflog$HourInput < 8)])),
+             length(which(dflog$User == inputPerson & dflog$HourInput >= 8 & dflog$HourInput< 10))/length(unique(dflog$Date[which(dflog$User == inputPerson & dflog$HourInput >= 8 & dflog$HourInput < 10)])),
+             length(which(dflog$User == inputPerson & dflog$HourInput >= 10 & dflog$HourInput < 12))/length(unique(dflog$Date[which(dflog$User == inputPerson & dflog$HourInput >= 10 & dflog$HourInput < 12)])),
+             length(which(dflog$User == inputPerson & dflog$HourInput >= 12 & dflog$HourInput < 14))/length(unique(dflog$Date[which(dflog$User == inputPerson & dflog$HourInput >= 12 & dflog$HourInput < 14)])),
+             length(which(dflog$User == inputPerson & dflog$HourInput >= 14 & dflog$HourInput < 16))/length(unique(dflog$Date[which(dflog$User == inputPerson & dflog$HourInput >= 14 & dflog$HourInput < 16)])),
+             length(which(dflog$User == inputPerson & dflog$HourInput >= 16 & dflog$HourInput < 18))/length(unique(dflog$Date[which(dflog$User == inputPerson & dflog$HourInput >= 16 & dflog$HourInput < 18)])),
+             length(which(dflog$User == inputPerson & dflog$HourInput >= 18 & dflog$HourInput < 20))/length(unique(dflog$Date[which(dflog$User == inputPerson & dflog$HourInput >= 18 & dflog$HourInput < 20)])),
+             length(which(dflog$User == inputPerson & dflog$HourInput >= 20 & dflog$HourInput < 22))/length(unique(dflog$Date[which(dflog$User == inputPerson & dflog$HourInput >= 20 & dflog$HourInput < 22)])),
+             length(which(dflog$User == inputPerson & dflog$HourInput >= 22 & dflog$HourInput < 0))/length(unique(dflog$Date[which(dflog$User == inputPerson & dflog$HourInput >= 22)])))
+  result<-na.omit(result)
+  return(max(result))
+}
+
+#######################################
+
+# Cigarettes consumption per weekday
+cigconsumption<-function(dflog,inputPerson){
+  weekday<-c(1,2,3,4,5,6,7)
+  cons<-c()
+  for(d in weekday){
+    cons<-c(cons,length(which(dflog$User == inputPerson  & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$WDay == d)))
+  }
+  dfcons<-data.frame(weekday,cons)
+  return(dfcons)
+}
+
+# Cigarettes consumption weekday
+cigconsumptionwday<-function(dflog,inputPerson){
+  return(length(which(dflog$User == inputPerson & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$WDay < 6)))
+}
+
+# Cigarettes consumption weekend
+cigconsumptionwend<-function(dflog,inputPerson){
+  return(length(which(dflog$User == inputPerson & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$WDay > 5)))
+}
+
+# Cigarettes consumption in last seven days
+cigconsumption7<-function(dfstats,inputPerson){
+  return(dfstats$nbcig[which(dfstats$User == inputPerson & dfstats$Week == max(dfstats$Week[which(dfstats$User == inputPerson)]))])
+}
+
+# Mean of cigarette consumption per weekday
+meancons <- function(dflog, inputPerson){
+  weekday<-c(1,2,3,4,5,6,7)
+  cons<-c()
+  for(d in weekday){
+    temp<-length(which(dflog$User == inputPerson  & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$WDay == d))/length(unique(dflog$Date[which(dflog$User == inputPerson  & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$WDay == d)]))
+    cons<-c(cons,temp)
+  }
+  dfcons<-data.frame(weekday,cons)
+  return(dfcons)
+}
+
+# Std of cigarette consumption per weekday
+stdcons <- function(dflog, inputPerson){
+  weekday<-c(1,2,3,4,5,6,7)
+  cons<-c()
+  for(d in weekday){
+    temp<-c()
+    for(date in unique(dflog$Date[which(dflog$User == inputPerson  & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$WDay == d)])){
+      temp<-c(temp,length(which(dflog$User == inputPerson  & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$WDay == d & dflog$Date == date)))
+    }
+    cons<-c(cons,sd(temp))
+  }
+  dfcons<-data.frame(weekday,cons)
+  return(dfcons)
+}
+
+###################################################################
 #Cigarette per weekday per time slot
 stat_day <- function(weekday , dfWeek ){
   
@@ -240,7 +315,7 @@ Consumption_Between_Weeks <- function(dflog, inputPerson){
 }
 
 ### Mode usage per week 
-Consumption_Between_Weeks <- function(dflog, inputPerson, inputMode){
+Mode_Usage_Per_Week <- function(dflog, inputPerson, inputMode){
   nb_weeks <- length(unique(dflog$Week[which(dflog$User == inputPerson)]))
   weeks <- unique(dflog$Week[which(dflog$User == inputPerson)])
   result <- c()
@@ -293,6 +368,7 @@ Cigarette_Consumption_perWD <- function(dflog, inputWeek, inputPerson) {
   return(result)
 }
 
+######################################################################################
 ### 4 Engagement tab 
 ### Engagement over all period 
 
@@ -334,7 +410,6 @@ EngagementPerWeek <- function(dfstats, inputPerson){
 ### Cigarettes consumption over all period 
 Consumption_Over_All_Period <- function(dflog, inputPerson){
   nb_days <- length(unique(dflog$TimeInput[which(dflog$User == inputPerson)]))
-  print(nb_days)
   #List of the days WARNING first element at indice 1
   all_days <- unique(dflog$TimeInput[which(dflog$User == inputPerson)])
   result <- c()

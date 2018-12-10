@@ -88,6 +88,44 @@ MeanPerWeekDay<-meanweekday(dflog,inputPerson)
 
 MeanPerWeekEnd<-meanweekend(dflog,inputPerson)
 
+### Most Smoking Intensity Slot
+
+MostSmokingSlot<-mostsmokingslot(dflog, inputPerson)
+
+#############################################################################
+##Classic Tab
+### Cigarettes consumption per weekday
+
+dfcons<-cigconsumption(dflog,inputPerson)
+
+### Cigarettes consumption weekday
+
+CigConsWDay <- cigconsumptionwday(dflog,inputPerson)
+
+### Cigarettes consumption weekend
+
+CigConsWEnd <- cigconsumptionwend(dflog,inputPerson)
+
+### Cigarettes consumption in last seven days
+
+CigCons7 <- cigconsumption7(dfstats,inputPerson)
+
+### Mean of cigarette consumption per weekday
+
+dfmean<-meancons(dflog,inputPerson)
+
+### std of cigarette consumption per weekday
+
+dfstd<-stdcons(dflog,inputPerson)
+
+### Progress over all period
+
+dfprogress<-dfstats[which(dfstats$User == inputPerson), c("User","Week","progress")]
+
+### Progress Rate
+
+dfprogressrate<-dfstats[which(dfstats$User == inputPerson), c("User","Week","progressrate")]
+
 ## Week Tab
 ### Cigarettes per weekday per time slot
 
@@ -99,12 +137,13 @@ ConsumptionBetweenWeeks <- Consumption_Between_Weeks(dflog, inputPerson)
 
 ### Mode usage per week 
 
-ModeUsagePerWeek <- Consumption_Between_Weeks(dflog, inputPerson, inputMode)
+ModeUsagePerWeek <- Mode_Usage_Per_Week(dflog, inputPerson, inputMode)
 
 ### Cigarette Consumption per weekday
 
 CigaretteConsumptionPerWeekday <- Cigarette_Consumption_perWD(dflog, inputWeek, inputPerson)
 
+#########################################################################
 ## Engagement tab 
 ### Engagement over all period 
 
@@ -116,6 +155,8 @@ EngagementPerDay <- Engagement_perDay (dflog, inputPerson)
 
 EngagementPerWeek<- EngagementPerWeek (dfstats, inputPerson)
 
+
+#########################################################################
 ## All days Tab
 ### Cigarettes consumption over all period 
 
