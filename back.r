@@ -325,6 +325,44 @@ print(length(engagement_day_res[[1]]))
 print(engagement_day_res[[1]][1])
 print(engagement_day_res[[2]][1])
 
+### Engagement per week
+Engagement_perWeek <- function(inputPerson){
+  nb_weeks <- length(unique(dflog$Week[which(dflog$User == inputPerson)]))
+  print(nb_weeks)
+  #List of the days WARNING first element at indice 1
+  all_weeks <- unique(dflog$Week[which(dflog$User == inputPerson)])
+  result <- c()
+  
+  for (i in 1:nb_weeks){
+    print(all_weeks[i])
+    dfWeek <- dflog[which(dflog$User == inputPerson & dflog$Week== all_weeks[i]),]
+    if(all_weeks[i] >=1){
+      nb_autoskip <- length(dfWeek$Type[which(dfWeek$Type == "Auto skipped")])
+      normalize <- length(dfWeek$Type[which(dfWeek$Type == "Auto skipped" | dfWeek$Type == "On time" | dfWeek$Type == "Skipped" | dfWeek$Type == "Snoozed")])
+      if(normalize != 0){
+        engagement <- 1-(nb_autoskip/normalize)
+        if(engagement <0.4){
+          engagement <- result[length(result)]
+        }
+        result <- c(result, engagement )
+      }else{
+        #When the lighter is not used at all we put the engagement value to 0 anyway
+        result <- c(result, 0)#the user doesn't use the lighter at all
+      }
+    } else {
+      result <- c(result, 0)# when we are in behaviour mode
+    }
+    
+  }
+  Final_result<-list( result, all_weeks) 
+  return(Final_result)
+}
+engagement_week_res<- Engagement_perWeek ("Abel Sharpe")
+print(engagement_week_res)
+print(length(engagement_week_res[[1]]))
+print(engagement_week_res[[1]][1])
+print(engagement_week_res[[2]][1])
+
 ### 5 All days Tab
 ### Cigarettes consumption over all period 
 Consumption_Over_All_Period <- function(inputPerson){
