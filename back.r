@@ -74,9 +74,19 @@ cig_saved_res<-CigarettesSaved("Joseph Toussaint")
 print(cig_saved_res)
 
 #### Money Saved
-MoneySaved <- CigarettesSaved
-print("Money Saved")
-print(MoneySaved)
+MoneySaved <- function (inputPerson){
+  result<-c()
+  #If we want to change the price of one cigarette one day
+  set_price <- 1 
+  for(w in unique(dflog$Week[which(dflog$User == inputPerson)])){
+    result<-c(result, sum(length(which(dflog$User == inputPerson & dflog$Type == "Behaviour")) 
+                          - length(which(dflog$User == inputPerson & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$Week == w))))
+  }
+  result<-sum(result)*set_price
+  return (result)
+}
+money_saved_res<-MoneySaved("Joseph Toussaint")
+print(money_saved_res)
 
 #### Overall Progress
 OverallProgress <- c()
