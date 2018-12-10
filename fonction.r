@@ -292,3 +292,40 @@ Cigarette_Consumption_perWD <- function(dflog, inputWeek, inputPerson) {
   result <- data.frame("Day"= c("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday" ), "Consumption"= result)
   return(result)
 }
+
+### 4 Engagement tab 
+### Engagement over all period 
+
+### Engagement per day
+Engagement_perDay <- function(dflog, inputPerson){
+  nb_days <- length(unique(dflog$TimeInput[which(dflog$User == inputPerson)]))
+  #List of the days WARNING first element at indice 1
+  all_days <- unique(dflog$TimeInput[which(dflog$User == inputPerson)])
+  result <- c()
+  
+  for (i in 1:nb_days){
+    dfWeek <- dflog[which(dflog$User == inputPerson & dflog$TimeInput== all_days[i]),]
+    if(dfWeek$Week >=1){
+      nb_autoskip <- length(dfWeek$Type[which(dfWeek$Type == "Auto skipped")])
+      normalize <- length(dfWeek$Type[which(dfWeek$Type == "Auto skipped" | dfWeek$Type == "On time" | dfWeek$Type == "Skipped" | dfWeek$Type == "Snoozed")]) 
+      
+      if(normalize != 0){
+        engagement <- 1-(nb_autoskip/normalize)
+        result <- c(result, engagement )
+      }else{
+        result <- c(result, 0)#the user doesn't use the lighter at all
+      }
+    } else {
+      result <- c(result, 0)# when we are in behaviour mode
+    }
+  }
+  Final_result<- data.frame("Day"= all_days, "Engagement"= result ) 
+  return(Final_result)
+}
+
+### Engagement per week
+EngagementPerWeek <- function(dfstats, inputPerson){
+  df <- dfstats[which(dfstats$User == inputPerson),]
+  Final_result<- data.frame("Week"= df$Week, "Engagement"= df$engagement) 
+  return(Final_result)
+}

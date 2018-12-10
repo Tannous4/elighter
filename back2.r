@@ -104,3 +104,14 @@ ModeUsagePerWeek <- Consumption_Between_Weeks(dflog, inputPerson, inputMode)
 ### Cigarette Consumption per weekday
 
 CigaretteConsumptionPerWeekday <- Cigarette_Consumption_perWD(dflog, inputWeek, inputPerson)
+
+## Engagement tab 
+### Engagement over all period 
+
+### Engagement per day
+
+EngagementPerDay <- Engagement_perDay (dflog, inputPerson)
+
+### Engagement per week
+
+EngagementPerWeek<- EngagementPerWeek (dfstats, inputPerson)
