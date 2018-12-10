@@ -23,24 +23,29 @@ progressfunction <- function(inputWeek, inputPerson){
                 - length(which(dflog$User == inputPerson & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$Week == inputWeek)))
                / temp)
   }
+  if(result < 0.001){
+    result<-0
+  }
   return(result)
 }
 
 progressratefunction <- function(inputWeek, inputPerson){
   ProgressRate <- 0
   Progress<-progressfunction(inputWeek,inputPerson)
+  print(Progress)
   if(Progress != 0){
-    if(length(which(dflog$User == inputPerson & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$Week == inputWeek-1)) > 0){
-      ProgressLast <- progressfunction(inputWeek-1,inputPerson)
+    ProgressLast <- progressfunction(inputWeek-1,inputPerson)
+    if(ProgressLast > 0){
       ProgressRate <- (Progress - ProgressLast)/abs(ProgressLast)
-    }else if(length(which(dflog$User == inputPerson & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$Week == inputWeek-2)) > 0){
+    }else if(progressfunction(inputWeek-1,inputPerson) > 0){
       ProgressLast <- progressfunction(inputWeek-2,inputPerson)
       ProgressRate <- (Progress - ProgressLast)/abs(ProgressLast)
     }
   }
   if(ProgressRate)
-  return(ProgressRate)
+    return(ProgressRate)
 }
+
 
 # Week
 dflog$Week <- (-1)
