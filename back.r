@@ -61,14 +61,17 @@ print(inputPerson)
 ### 1 Info table
 
 #### Cigarettes Saved
-CigarettesSaved<-c()
-for(w in unique(dflog$Week[which(dflog$User == inputPerson)])){
-  CigarettesSaved<-c(CigarettesSaved, sum(length(which(dflog$User == inputPerson & dflog$Type == "Behaviour")) 
-                                         - length(which(dflog$User == inputPerson & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$Week == w))))
+CigarettesSaved <- function (inputPerson){
+  result<-c()
+  for(w in unique(dflog$Week[which(dflog$User == inputPerson)])){
+    result<-c(result, sum(length(which(dflog$User == inputPerson & dflog$Type == "Behaviour")) 
+                          - length(which(dflog$User == inputPerson & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$Week == w))))
+  }
+  result<-sum(result)
+  return (result)
 }
-CigarettesSaved<-sum(CigarettesSaved)
-print("Cigarettes Saved")
-print(CigarettesSaved)
+cig_saved_res<-CigarettesSaved("Joseph Toussaint")
+print(cig_saved_res)
 
 #### Money Saved
 MoneySaved <- CigarettesSaved
@@ -413,5 +416,4 @@ Mode_Usage <- function(inputPerson, inputMode){
 Mode_res<- Mode_Usage ("Baptiste Mallet", "Cheated")
 print(Mode_res[[1]][1])
 print(Mode_res[[2]][1])
-
 
