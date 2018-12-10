@@ -11,21 +11,20 @@ dflog$Date <- as.Date(as.character(dflog$Time), format="%d/%m/%Y %H:%M")
 # function progress
 progressfunction <- function(inputWeek, inputPerson){
   result <- 0
-  conditionWeek <- inputWeek - max(dflog$Week[which(dflog$User == inputPerson & dflog$Type == "Behaviour")])
-  if(conditionWeek > 0 & conditionWeek < 3){
+  if(inputWeek < 3){
     result <- ((length(which(dflog$User == inputPerson & dflog$Type == "Behaviour"))
                 - length(which(dflog$User == inputPerson & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$Week == inputWeek)))
                / length(which(dflog$User == inputPerson & dflog$Type == "Behaviour")))
   }
   if(conditionWeek > 2){
     temp <- length(which(dflog$User == inputPerson & (dflog$Type == "On time" | dflog$Type == "Cheated") & (dflog$Week == inputWeek-1 | dflog$Week == inputWeek-2 | dflog$Week == inputWeek-3)))/3
-    if(temp > 0){
+    if(temp>0){
       result <- ((temp
                   - length(which(dflog$User == inputPerson & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$Week == inputWeek)))
                  / temp)
     }
   }
-  if(result < 0.001){
+  if(abs(result) < 0.001){
     result<-0
   }
   return(result)
@@ -34,12 +33,11 @@ progressfunction <- function(inputWeek, inputPerson){
 progressratefunction <- function(inputWeek, inputPerson){
   ProgressRate <- 0
   Progress<-progressfunction(inputWeek,inputPerson)
-  print(Progress)
-  if(Progress != 0){
+  if(abs(Progress) > 0){
     ProgressLast <- progressfunction(inputWeek-1,inputPerson)
-    if(ProgressLast > 0){
+    if(abs(ProgressLast) > 0){
       ProgressRate <- (Progress - ProgressLast)/abs(ProgressLast)
-    }else if(progressfunction(inputWeek-1,inputPerson) > 0){
+    }else if(abs(progressfunction(inputWeek-2,inputPerson)) > 0){
       ProgressLast <- progressfunction(inputWeek-2,inputPerson)
       ProgressRate <- (Progress - ProgressLast)/abs(ProgressLast)
     }
