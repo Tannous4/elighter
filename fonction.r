@@ -145,41 +145,43 @@ bestprogressrate <- function(dfstats, inputPerson){
 #Mean Per Day
 meanperday<-function(dflog,inputPerson){
   dfsub<-dflog[which(dflog$User == inputPerson & (dflog$Type == "On time" | dflog$Type == "Cheated" | dflog$Type == "Behaviour")),]
-  mpd<-length(dfsub$User)/length(unique(dfsub$Date))
+  mpd<-length(dfsub$User)/length(unique(dfsub$TimeInput))
   return(mpd)
 }
 
 #Mean Per Week Day
 meanweekday<-function(dflog,inputPerson){
   dfsub<-dflog[which(dflog$User == inputPerson & (dflog$Type == "On time" | dflog$Type == "Cheated" | dflog$Type == "Behaviour") & dflog$WDay < 6),]
-  mpd<-length(dfsub$User)/length(unique(dfsub$Date))
+  mpd<-length(dfsub$User)/length(unique(dfsub$TimeInput))
   return(mpd)
 }
 
 #Mean Per Week Ends
 meanweekend<-function(dflog,inputPerson){
   dfsub<-dflog[which(dflog$User == inputPerson & (dflog$Type == "On time" | dflog$Type == "Cheated" | dflog$Type == "Behaviour") & dflog$WDay > 5),]
-  mpd<-length(dfsub$User)/length(unique(dfsub$Date))
+  mpd<-length(dfsub$User)/length(unique(dfsub$TimeInput))
   return(mpd)
 }
 
 # Most Smoking Intensity Slot
 mostsmokingslot <- function(dflog, inputPerson){
   result <- c()
-  result <-c(length(which(dflog$User == inputPerson & dflog$HourInput >= 0 & dflog$HourInput < 2))/length(unique(dflog$Date[which(dflog$User == inputPerson & dflog$HourInput >= 0 & dflog$HourInput < 2)])),
-             length(which(dflog$User == inputPerson & dflog$HourInput >= 2 & dflog$HourInput < 4))/length(unique(dflog$Date[which(dflog$User == inputPerson & dflog$HourInput >= 2 & dflog$HourInput < 4)])),
-             length(which(dflog$User == inputPerson & dflog$HourInput >= 4 & dflog$HourInput < 6))/length(unique(dflog$Date[which(dflog$User == inputPerson & dflog$HourInput >= 4 & dflog$HourInput < 6)])),
-             length(which(dflog$User == inputPerson & dflog$HourInput >= 6 & dflog$HourInput < 8))/length(unique(dflog$Date[which(dflog$User == inputPerson & dflog$HourInput >= 6 & dflog$HourInput < 8)])),
-             length(which(dflog$User == inputPerson & dflog$HourInput >= 8 & dflog$HourInput< 10))/length(unique(dflog$Date[which(dflog$User == inputPerson & dflog$HourInput >= 8 & dflog$HourInput < 10)])),
-             length(which(dflog$User == inputPerson & dflog$HourInput >= 10 & dflog$HourInput < 12))/length(unique(dflog$Date[which(dflog$User == inputPerson & dflog$HourInput >= 10 & dflog$HourInput < 12)])),
-             length(which(dflog$User == inputPerson & dflog$HourInput >= 12 & dflog$HourInput < 14))/length(unique(dflog$Date[which(dflog$User == inputPerson & dflog$HourInput >= 12 & dflog$HourInput < 14)])),
-             length(which(dflog$User == inputPerson & dflog$HourInput >= 14 & dflog$HourInput < 16))/length(unique(dflog$Date[which(dflog$User == inputPerson & dflog$HourInput >= 14 & dflog$HourInput < 16)])),
-             length(which(dflog$User == inputPerson & dflog$HourInput >= 16 & dflog$HourInput < 18))/length(unique(dflog$Date[which(dflog$User == inputPerson & dflog$HourInput >= 16 & dflog$HourInput < 18)])),
-             length(which(dflog$User == inputPerson & dflog$HourInput >= 18 & dflog$HourInput < 20))/length(unique(dflog$Date[which(dflog$User == inputPerson & dflog$HourInput >= 18 & dflog$HourInput < 20)])),
-             length(which(dflog$User == inputPerson & dflog$HourInput >= 20 & dflog$HourInput < 22))/length(unique(dflog$Date[which(dflog$User == inputPerson & dflog$HourInput >= 20 & dflog$HourInput < 22)])),
-             length(which(dflog$User == inputPerson & dflog$HourInput >= 22 & dflog$HourInput < 0))/length(unique(dflog$Date[which(dflog$User == inputPerson & dflog$HourInput >= 22)])))
-  result<-na.omit(result)
-  return(max(result))
+  slot<-c("OH - 2H","2H - 4H","4H - 6H","6H - 8H","8H - 10H","10H - 12H","12H - 14H","14H - 16H","16H - 18H","18H - 20H","20H - 22H","22H - 0H")
+  result <-c(length(which(dflog$User == inputPerson & dflog$HourInput >= 0 & dflog$HourInput < 2))/length(unique(dflog$TimeInput[which(dflog$User == inputPerson & dflog$HourInput >= 0 & dflog$HourInput < 2)])),
+             length(which(dflog$User == inputPerson & dflog$HourInput >= 2 & dflog$HourInput < 4))/length(unique(dflog$TimeInput[which(dflog$User == inputPerson & dflog$HourInput >= 2 & dflog$HourInput < 4)])),
+             length(which(dflog$User == inputPerson & dflog$HourInput >= 4 & dflog$HourInput < 6))/length(unique(dflog$TimeInput[which(dflog$User == inputPerson & dflog$HourInput >= 4 & dflog$HourInput < 6)])),
+             length(which(dflog$User == inputPerson & dflog$HourInput >= 6 & dflog$HourInput < 8))/length(unique(dflog$TimeInput[which(dflog$User == inputPerson & dflog$HourInput >= 6 & dflog$HourInput < 8)])),
+             length(which(dflog$User == inputPerson & dflog$HourInput >= 8 & dflog$HourInput< 10))/length(unique(dflog$TimeInput[which(dflog$User == inputPerson & dflog$HourInput >= 8 & dflog$HourInput < 10)])),
+             length(which(dflog$User == inputPerson & dflog$HourInput >= 10 & dflog$HourInput < 12))/length(unique(dflog$TimeInput[which(dflog$User == inputPerson & dflog$HourInput >= 10 & dflog$HourInput < 12)])),
+             length(which(dflog$User == inputPerson & dflog$HourInput >= 12 & dflog$HourInput < 14))/length(unique(dflog$TimeInput[which(dflog$User == inputPerson & dflog$HourInput >= 12 & dflog$HourInput < 14)])),
+             length(which(dflog$User == inputPerson & dflog$HourInput >= 14 & dflog$HourInput < 16))/length(unique(dflog$TimeInput[which(dflog$User == inputPerson & dflog$HourInput >= 14 & dflog$HourInput < 16)])),
+             length(which(dflog$User == inputPerson & dflog$HourInput >= 16 & dflog$HourInput < 18))/length(unique(dflog$TimeInput[which(dflog$User == inputPerson & dflog$HourInput >= 16 & dflog$HourInput < 18)])),
+             length(which(dflog$User == inputPerson & dflog$HourInput >= 18 & dflog$HourInput < 20))/length(unique(dflog$TimeInput[which(dflog$User == inputPerson & dflog$HourInput >= 18 & dflog$HourInput < 20)])),
+             length(which(dflog$User == inputPerson & dflog$HourInput >= 20 & dflog$HourInput < 22))/length(unique(dflog$TimeInput[which(dflog$User == inputPerson & dflog$HourInput >= 20 & dflog$HourInput < 22)])),
+             length(which(dflog$User == inputPerson & dflog$HourInput >= 22 & dflog$HourInput < 0))/length(unique(dflog$TimeInput[which(dflog$User == inputPerson & dflog$HourInput >= 22)])))
+  dfslot<-data.frame(slot,result)
+  dfslot<-na.omit(dfslot)
+  return(dfslot)
 }
 
 #######################################
@@ -215,7 +217,7 @@ meancons <- function(dflog, inputPerson){
   weekday<-c(1,2,3,4,5,6,7)
   cons<-c()
   for(d in weekday){
-    temp<-length(which(dflog$User == inputPerson  & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$WDay == d))/length(unique(dflog$Date[which(dflog$User == inputPerson  & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$WDay == d)]))
+    temp<-length(which(dflog$User == inputPerson  & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$WDay == d))/length(unique(dfsub$TimeInput[which(dflog$User == inputPerson  & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$WDay == d)]))
     cons<-c(cons,temp)
   }
   dfcons<-data.frame(weekday,cons)
@@ -228,8 +230,8 @@ stdcons <- function(dflog, inputPerson){
   cons<-c()
   for(d in weekday){
     temp<-c()
-    for(date in unique(dflog$Date[which(dflog$User == inputPerson  & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$WDay == d)])){
-      temp<-c(temp,length(which(dflog$User == inputPerson  & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$WDay == d & dflog$Date == date)))
+    for(date in unique(dfsub$TimeInput[which(dflog$User == inputPerson  & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$WDay == d)])){
+      temp<-c(temp,length(which(dflog$User == inputPerson  & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$WDay == d & dfsub$TimeInput == date)))
     }
     cons<-c(cons,sd(temp))
   }

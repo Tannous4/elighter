@@ -13,14 +13,10 @@ ui<- dashboardPage(
                 "text/comma-separated-values,text/plain",
                 ".csv")
     ),
-    tags$hr(),
-    checkboxInput("header", "Header", TRUE),
     fileInput("file2", "Choose Excel File",
               accept = c(".xlsx")
               
     ),
-    tags$hr(),
-    checkboxInput("header", "Header", TRUE),
     selectInput("userChoice", "Please choose a user: ", ""),
     selectInput("weekChoice", "Please choose a user: ", "")
   ),
@@ -122,7 +118,30 @@ ui<- dashboardPage(
               )
             )
           ),
-          tabPanel(title="Info"
+          tabPanel(title="Info",
+                   fluidRow(
+                     valueBoxOutput("suname"),
+                     valueBoxOutput("suage"),
+                     valueBoxOutput("suagecgy")
+                   ),
+                   fluidRow(
+                     valueBoxOutput("sumoneysaved"),
+                     valueBoxOutput("sucigsaved")
+                   ),
+                   fluidRow(
+                     valueBoxOutput("suoverallprog"),
+                     valueBoxOutput("suoverallprogcgy"),
+                     valueBoxOutput("subestprograte"),
+                     valueBoxOutput("suoverallengagement")
+                   ),
+                   fluidRow(
+                     valueBoxOutput("sumeanconscig"),
+                     valueBoxOutput("sumeanconscigwday"),
+                     valueBoxOutput("sumeanconscigwend"),
+                     valueBoxOutput("sumeanconscigslot"),
+                     valueBoxOutput("sumeanconscigslotval")
+                   )
+                   
             
           ),
           tabPanel(title="Classic"

@@ -6,7 +6,7 @@ server <- function(input, output, session){
     tryCatch(
       {
         dfsurvey <<- read_excel(input$file2$datapath)
-        dflog<<- read.csv(input$file1$datapath, header = input$header, sep=";")
+        dflog<<- read.csv(input$file1$datapath, header = TRUE, sep=";")
         #PRE-PROCESSING DATA
         dflog$User<<-gsub('\216',"e", dflog$User)
         dflog$User<<-gsub('\221',"e", dflog$User)
@@ -647,5 +647,145 @@ server <- function(input, output, session){
       setView(lng = longCenter, lat = latCenter, zoom = 8)  %>%
       addMarkers(lng = ~longitudes, lat = ~latitudes, popup = paste("nb cigarettes", coord1$x))
     m
+  })
+  
+  ###############################################################
+  ## Info Tab Single User
+  
+  output$suname <- renderValueBox({
+    req(input$file1)
+    req(input$file2)
+    valueBox(
+      dfsurvey$Name[which(dfsurvey$Name == input$userChoice)], "Name", icon = icon("user"),
+      color = "purple"
+    )
+  })
+  
+  output$suage <- renderValueBox({
+    req(input$file1)
+    req(input$file2)
+    valueBox(
+      dfsurvey$Age[which(dfsurvey$Name == input$userChoice)], "Age", icon = icon("user"),
+      color = "purple"
+    )
+  })
+  
+  output$suagecgy <- renderValueBox({
+    req(input$file1)
+    req(input$file2)
+    age<-dfsurvey$Age[which(dfsurvey$Name == input$userChoice)]
+    cgy<-"Middle"
+    if(length(age)>0){
+      if(age<30){
+        cgy<-"Young"
+      }else if(age>=50){
+        cgy<-"Old"
+      }
+    }
+    valueBox(
+      cgy, "Age Category", icon = icon("user"),
+      color = "purple"
+    )
+  })
+  
+  output$sumoneysaved <- renderValueBox({
+    req(input$file1)
+    req(input$file2)
+    valueBox(
+      paste0(CigarettesSaved(dfstats,input$userChoice),"$"), "Money Saved", icon = icon("credit-card"),
+      color = "olive", width = 6
+    )
+  })
+  
+  output$sucigsaved <- renderValueBox({
+    req(input$file1)
+    req(input$file2)
+    valueBox(
+      CigarettesSaved(dfstats,input$userChoice), "Cigarettes Saved", icon = icon("save"),
+      color = "olive", width = 1/2
+    )
+  })
+  
+  output$suoverallprog <- renderValueBox({
+    req(input$file1)
+    req(input$file2)
+    valueBox(
+      round(overallprogress(dfstats, input$userChoice),2), "Overall Progress", icon = icon("list-ul"),
+      color = "navy", width = 3
+    )
+  })
+  
+  output$suoverallprogcgy <- renderValueBox({
+    req(input$file1)
+    req(input$file2)
+    valueBox(
+      overallprogresscgy(dfstats, input$userChoice), "Overall Progress Category", icon = icon("list-ul"),
+      color = "navy", width = 3
+    )
+  })
+  
+  output$suoverallengagement <- renderValueBox({
+    req(input$file1)
+    req(input$file2)
+    valueBox(
+      round(overallengagement(dfstats, input$userChoice),2), "Overall Engagement", icon = icon("list-ul"),
+      color = "navy", width = 3
+    )
+  })
+  
+  output$subestprograte <- renderValueBox({
+    req(input$file1)
+    req(input$file2)
+    valueBox(
+      round(bestprogressrate(dfstats, input$userChoice),2), "Best Progress Rate", icon = icon("list-ul"),
+      color = "navy", width = 3
+    )
+  })
+  
+  output$sumeanconscig <- renderValueBox({
+    req(input$file1)
+    req(input$file2)
+    valueBox(
+      round(meanperday(dflog, input$userChoice),2), "Mean Per Day", icon = icon("weight"),
+      color = "teal", width = 3
+    )
+  })
+  
+  output$sumeanconscigwday <- renderValueBox({
+    req(input$file1)
+    req(input$file2)
+    valueBox(
+      round(meanweekday(dflog, input$userChoice),2), "Mean Per Week Day", icon = icon("weight"),
+      color = "teal", width = 3
+    )
+  })
+  
+  output$sumeanconscigwend <- renderValueBox({
+    req(input$file1)
+    req(input$file2)
+    valueBox(
+      round(meanweekend(dflog, input$userChoice),2), "Mean Per Week End", icon = icon("weight"),
+      color = "teal", width = 3
+    )
+  })
+  
+  output$sumeanconscigslot <- renderValueBox({
+    req(input$file1)
+    req(input$file2)
+    dfslot<-mostsmokingslot(dflog, input$userChoice)
+    valueBox(
+      dfslot$slot[which(dfslot$result == max(dfslot$result))], "Max Smoking Slot", icon = icon("arrow-alt-circle-up"),
+      color = "yellow", width = 3
+    )
+  })
+  
+  output$sumeanconscigslotval <- renderValueBox({
+    req(input$file1)
+    req(input$file2)
+    dfslot<-mostsmokingslot(dflog, input$userChoice)
+    valueBox(
+      round(dfslot$result[which(dfslot$result == max(dfslot$result))],2), "Avg Cigarettes Max Smoking Slot", icon = icon("arrow-alt-circle-up"),
+      color = "yellow", width = 3
+    )
   })
 }
