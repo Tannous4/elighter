@@ -490,6 +490,68 @@ avg_money <- function (dflog, dfstats){
   return(avg)
 }
 
+##################################################################################
+### Classic
+### Mean and std of cigarette consumption per weekday
+mean_consumption_std_weekday <- function (dflog){
+  nb_weeks<- length(unique(dflog$Week))
+  all_weeks <- unique(dflog$Week)
+  
+  nb_users <- length(unique(dflog$User))
+  all_users <- unique(dflog$User)
+  avg <- c()
+  std<- c()
+  monday <- 0
+  tuesday <- 0
+  wednesday<- 0
+  thursday <- 0
+  friday <- 0
+  saturday <- 0
+  sunday <- 0
+  
+  mondaylist <- c()
+  tuesdaylist <- c()
+  wednesdaylist<- c()
+  thursdaylist <- c()
+  fridaylist <- c()
+  saturdaylist <- c()
+  sundaylist <- c()
+  
+  for (i in 1:nb_weeks){
+    #for (u in 1:nb_users){
+    #dfWeek <- dflog[which(dflog$User == all_users[u] & (dflog$Type == "Cheated" | dflog$Type == "On time" | dflog$Type == "Behaviour")),]
+    dfWeek <- dflog[which(dflog$Type == "Cheated" | dflog$Type == "On time" | dflog$Type == "Behaviour"),]
+    if (length(dfWeek[which(dfWeek$Week == all_weeks[i]),])>0){
+      dfWeek2 <- dfWeek[which(dfWeek$Week == all_weeks[i]),]
+      monday <- monday + sum(stat_day(1, dfWeek2))
+      tuesday <- tuesday + sum(stat_day(2, dfWeek2))
+      wednesday<- wednesday + sum(stat_day(3, dfWeek2))
+      thursday <- thursday + sum(stat_day(4, dfWeek2))
+      friday <- friday + sum(stat_day(5, dfWeek2))
+      saturday <- saturday + sum(stat_day(6, dfWeek2))
+      sunday <- sunday + sum(stat_day(7, dfWeek2))
+      
+      mondaylist <- c(mondaylist, sum(stat_day(1, dfWeek2)))
+      tuesdaylist <- c(tuesdaylist, sum(stat_day(2, dfWeek2)))
+      wednesdaylist <- c(wednesdaylist, sum(stat_day(3, dfWeek2)))
+      thursdaylist <- c(thursdaylist, sum(stat_day(4, dfWeek2)))
+      fridaylist <- c(fridaylist, sum(stat_day(5, dfWeek2)))
+      saturdaylist <- c(saturdaylist, sum(stat_day(6, dfWeek2)))
+      sundaylist <- c(sundaylist, sum(stat_day(7, dfWeek2)))
+    }
+    
+    #}
+    
+  }
+  
+  avg <- c(round(monday/nb_weeks), round(tuesday/nb_weeks), round(wednesday/nb_weeks), round(thursday/nb_weeks), round(friday/nb_weeks), round(saturday/nb_weeks), round(sunday/nb_weeks))
+  print( monday)
+  print(mondaylist)
+  std <- c(sd(mondaylist), sd(tuesdaylist), sd(wednesdaylist), sd(thursdaylist), sd(fridaylist), sd(saturdaylist), sd(sundaylist))
+  result <- data.frame("Mean"=avg, "Std"= std)
+  
+}
+
 #######################################################################
 #Engagement Overall
 
