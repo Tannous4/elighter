@@ -489,3 +489,17 @@ avg_money <- function (dflog, dfstats){
   avg <- round(total/nb_users)
   return(avg)
 }
+
+#######################################################################
+#Engagement Overall
+
+engagementoverall<-function(dfstats){
+  week<-sort.list(unique(dfstats$Week))
+  eng<-c()
+  for(w in week){
+    eng<-c(eng,mean(dfstats$engagement[which(dfstats$Week == w)]))
+  }
+  dfengall<-data.frame(week,eng)
+  dfengall<-na.omit(dfengall)
+  return(dfengall)
+}
