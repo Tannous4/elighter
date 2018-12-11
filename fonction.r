@@ -406,6 +406,7 @@ EngagementPerWeek <- function(dfstats, inputPerson){
   return(Final_result)
 }
 
+################################################################
 ### 5 All days Tab
 ### Cigarettes consumption over all period 
 Consumption_Over_All_Period <- function(dflog, inputPerson){
@@ -451,41 +452,56 @@ Mode_Usage <- function(dflog,inputPerson, inputMode){
 ##################################################################################
 ### 1. Information Tab
 ### Total Number of saved cigarettes
-total_number_of_cigarettes_saved <- function(dflog){
+total_number_of_cigarettes_saved <- function(dflog,dfstats){
   nb_users <- length(unique(dflog$User))
   all_users <- unique(dflog$User)
   sum_cig_saved <-0
   for (i in 1:nb_users){
-    sum_cig_saved <- sum_cig_saved + CigarettesSaved(all_users[i])
+    sum_cig_saved <- sum_cig_saved + CigarettesSaved(dfstats,all_users[i])
   }
   return(sum_cig_saved)
 }
 
-### Total Number of Money saved 
-total_number_of_money_saved <- function(dflog){
+### Total Number of Money saved
+total_number_of_money_saved <- function(dflog,dfstats){
   nb_users <- length(unique(dflog$User))
   all_users <- unique(dflog$User)
   sum_money_saved <-0
   for (i in 1:nb_users){
-    sum_money_saved <- sum_money_saved + MoneySaved(all_users[i])
+    sum_money_saved <- sum_money_saved + CigarettesSaved(dfstats,all_users[i])
   }
   return(sum_money_saved)
 }
 
 ### Avg number of saved cigarettes
-avg_nb_cig <- function (dflog){
+avg_nb_cig <- function (dflog,dfstats){
   nb_users <- length(unique(dflog$User))
-  total<-total_number_of_money_saved()
-  
+  total<-total_number_of_money_saved(dflog,dfstats)
+
   avg <- round(total/nb_users)
   return(avg)
 }
 
-### Average amount of money saved 
-avg_money <- function (dflog){
+### Average amount of money saved
+avg_money <- function (dflog,dfstats){
   nb_users <- length(unique(dflog$User))
-  total<-total_number_of_money_saved ()
-  
+  total<-total_number_of_money_saved (dflog,dfstats)
+
   avg <- round(total/nb_users)
   return(avg)
+}
+
+
+#######################################################################
+#Engagement Overall
+
+engagementoverall<-function(dfstats){
+  week<-sort.list(unique(dfstats$Week))
+  eng<-c()
+  for(w in week){
+    eng<-c(eng,mean(dfstats$engagement[which(dfstats$Week == w)]))
+  }
+  dfengall<-data.frame(week,eng)
+  dfengall<-na.omit(dfengall)
+  return(dfengall)
 }

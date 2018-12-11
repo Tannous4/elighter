@@ -170,16 +170,22 @@ ModeUsageOverAllPeriod<- Mode_Usage (dflog, inputPerson, inputMode)
 ### 1. Information Tab
 ### Total Number of saved cigarettes
 
-TotalNumberOfSavedCigarettes<-total_number_of_cigarettes_saved(dflog)
+TotalNumberOfSavedCigarettes<-total_number_of_cigarettes_saved(dflog,dfstats)
 
-### Total Number of Money saved 
+### Total Number of Money saved
 
-TotalNumberOfSavedMoney<-total_number_of_money_saved(dflog)
+TotalNumberOfSavedMoney<-total_number_of_money_saved(dflog,dfstats)
 
 ### Avg number of saved cigarettes
 
-AvgCigSaved <- avg_nb_cig(dflog)
+AvgCigSaved <- avg_nb_cig(dflog,dfstats)
 
-### Average amount of money saved 
+### Average amount of money saved
 
-AvgMoneySaved <- avg_money(dflog)
+AvgMoneySaved <- avg_money(dflog,dfstats)
+
+
+########################################################
+### Engagement Overall
+
+dfengall<-engagementoverall(dfstats)
