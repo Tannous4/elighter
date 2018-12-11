@@ -42,7 +42,10 @@ checkengagement<-function(dfstats){
     dfsub<-dfstats[which(dfstats$User == name & dfstats$Week < week & dfstats$engagement>0.4),]
     if(length(dfsub$Week)>0){
       dfstats$nbcig[i]<-dfsub$nbcig[which(dfsub$Week == max(dfsub$Week))]
+    }else{
+      dfstats$nbcig[i]<-dfstats$nbcig[which(dfstats$Week == 0 & dfstats$User == dfstats$User[i])]
     }
+    
   }
   return(dfstats)
 }
@@ -406,6 +409,7 @@ EngagementPerWeek <- function(dfstats, inputPerson){
   return(Final_result)
 }
 
+################################################################
 ### 5 All days Tab
 ### Cigarettes consumption over all period 
 Consumption_Over_All_Period <- function(dflog, inputPerson){
@@ -451,46 +455,46 @@ Mode_Usage <- function(dflog,inputPerson, inputMode){
 ##################################################################################
 ### 1. Information Tab
 ### Total Number of saved cigarettes
-total_number_of_cigarettes_saved <- function(dflog, dfstat){
+total_number_of_cigarettes_saved <- function(dflog,dfstats){
   nb_users <- length(unique(dflog$User))
   all_users <- unique(dflog$User)
   sum_cig_saved <-0
   for (i in 1:nb_users){
-    sum_cig_saved <- sum_cig_saved + CigarettesSaved(dfstat, all_users[i])
+    sum_cig_saved <- sum_cig_saved + CigarettesSaved(dfstats,all_users[i])
   }
   return(sum_cig_saved)
 }
 
-### Total Number of Money saved 
-total_number_of_money_saved <- function(dflog, dfstats){
+### Total Number of Money saved
+total_number_of_money_saved <- function(dflog,dfstats){
   nb_users <- length(unique(dflog$User))
   all_users <- unique(dflog$User)
   sum_money_saved <-0
   for (i in 1:nb_users){
-    sum_money_saved <- sum_money_saved + CigarettesSaved(dfstats, all_users[i])
+    sum_money_saved <- sum_money_saved + CigarettesSaved(dfstats,all_users[i])
   }
   return(sum_money_saved)
 }
 
 ### Avg number of saved cigarettes
-avg_nb_cig <- function (dflog ,dfstats){
+avg_nb_cig <- function (dflog,dfstats){
   nb_users <- length(unique(dflog$User))
-  total<-total_number_of_money_saved(dflog ,dfstats)
-  
+  total<-total_number_of_money_saved(dflog,dfstats)
+
   avg <- round(total/nb_users)
   return(avg)
 }
 
-### Average amount of money saved 
-avg_money <- function (dflog, dfstats){
+### Average amount of money saved
+avg_money <- function (dflog,dfstats){
   nb_users <- length(unique(dflog$User))
-  total<-total_number_of_money_saved (dflog ,dfstats)
-  
+  total<-total_number_of_money_saved (dflog,dfstats)
+
   avg <- round(total/nb_users)
   return(avg)
 }
 
-##################################################################################
+#######################################################################
 ### Classic
 ### Mean and std of cigarette consumption per weekday
 mean_consumption_std_weekday <- function (dflog){
@@ -568,11 +572,25 @@ ALL_cigarettes_per_WDAY_per_TS <- function(dflog){
   return(result) 
 }
 
+
+progressalluser<-function(dfstats){
+  week<-sort(unique(dfstats$Week))
+  prog<-c()
+  for(w in week){
+    temp<-sum(dfstats$progress[which(dfstats$Week == w)])/length(unique(dfstats$User[which(dfstats$Week == w)]))
+    prog<-c(prog,temp)
+  }
+  dfprogall<-data.frame(week,prog)
+  dfprogall<-na.omit(dfprogall)
+  return(dfprogall)
+}
+
+
 #######################################################################
 #Engagement Overall
 
 engagementoverall<-function(dfstats){
-  week<-sort.list(unique(dfstats$Week))
+  week<-sort(unique(dfstats$Week))
   eng<-c()
   for(w in week){
     eng<-c(eng,mean(dfstats$engagement[which(dfstats$Week == w)]))

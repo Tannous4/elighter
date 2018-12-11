@@ -7,8 +7,7 @@ library(plyr)
 library(dplyr)
 library(tidyr)  
 
-#dflog <- read.csv2("C:/Users/Christopher/Desktop/ING5/data analytics/project_part_1/logs.csv" )
-dflog <- read.csv2("/Users/sandrineschutt/Desktop/ELighter/logs.csv" )
+dflog <- read.csv2("C:/Users/Christopher/Desktop/ING5/data analytics/project_part_1/logs.csv" )
 dflog$Date <- as.Date(as.character(dflog$Time), format="%d/%m/%Y %H:%M")
 
 # Week
@@ -36,8 +35,7 @@ dfstats$nbcig<-0
 dfstats$progress<-0
 dfstats$progressrate<-0
 
-#source("C:/Users/Christopher/Desktop/ING5/data analytics/project_part_1/git-project/fonction.r")
-source("/Users/sandrineschutt/GIT/ELighter/fonction.r")
+source("C:/Users/Christopher/Desktop/ING5/data analytics/project_part_1/fonction.r")
 
 for(user in dfstats$User){
   dfstats<-Engagement_perWeek(dfstats,user)
@@ -137,7 +135,7 @@ CigarettePerWeekdayPerTimeSlot <- Cigarette_perWD_perTS(dflog, inputWeek , input
 
 ConsumptionBetweenWeeks <- Consumption_Between_Weeks(dflog, inputPerson)
 
-### Mode usage per week
+### Mode usage per week 
 
 ModeUsagePerWeek <- Mode_Usage_Per_Week(dflog, inputPerson, inputMode)
 
@@ -146,8 +144,8 @@ ModeUsagePerWeek <- Mode_Usage_Per_Week(dflog, inputPerson, inputMode)
 CigaretteConsumptionPerWeekday <- Cigarette_Consumption_perWD(dflog, inputWeek, inputPerson)
 
 #########################################################################
-## Engagement tab
-### Engagement over all period
+## Engagement tab 
+### Engagement over all period 
 
 ### Engagement per day
 
@@ -160,12 +158,11 @@ EngagementPerWeek<- EngagementPerWeek (dfstats, inputPerson)
 
 #########################################################################
 ## All days Tab
-### Cigarettes consumption over all period
+### Cigarettes consumption over all period 
 
 CigarettesConsumptionOverAllPeriod <- Consumption_Over_All_Period (dflog, inputPerson)
 
 ### Mode usage over all period
-
 ModeUsageOverAllPeriod<- Mode_Usage (dflog, inputPerson, inputMode)
 
 #All Users
@@ -173,21 +170,21 @@ ModeUsageOverAllPeriod<- Mode_Usage (dflog, inputPerson, inputMode)
 ### 1. Information Tab
 ### Total Number of saved cigarettes
 
-TotalNumberOfSavedCigarettes<-total_number_of_cigarettes_saved(dflog, dfstats)
+TotalNumberOfSavedCigarettes<-total_number_of_cigarettes_saved(dflog,dfstats)
 
-### Total Number of Money saved 
+### Total Number of Money saved
 
-TotalNumberOfSavedMoney<-total_number_of_money_saved(dflog, dfstats)
+TotalNumberOfSavedMoney<-total_number_of_money_saved(dflog,dfstats)
 
 ### Avg number of saved cigarettes
 
-AvgCigSaved <- avg_nb_cig(dflog, dfstats)
+AvgCigSaved <- avg_nb_cig(dflog,dfstats)
 
-### Average amount of money saved 
+### Average amount of money saved
 
-AvgMoneySaved <- avg_money(dflog ,dfstats)
+AvgMoneySaved <- avg_money(dflog,dfstats)
 
-##################################################################################
+########################################################
 ### Classic
 ### Mean and std of cigarette consumption per weekday
 
@@ -197,7 +194,11 @@ MeanStdCigarette <- mean_consumption_std_weekday (dflog)
 
 CigPerWdayPerTsRes <- ALL_cigarettes_per_WDAY_per_TS(dflog)
 
-##################################################################################
+### Overall Progress
+
+dfprogall<-progressalluser(dfstats)
+
+########################################################
 ### Engagement Overall
 
 dfengall<-engagementoverall(dfstats)
