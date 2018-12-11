@@ -9,10 +9,15 @@ library(lubridate)
 library(arules)
 library(arulesViz)
 library(leaflet)
+library(knitr)
+library(plyr)
+library(dplyr)
+library(tidyr)
 
 # Shiny App
 
-source("C:/Users/Christopher/Desktop/ING5/data analytics/project_part_1/ui.r")
-source("C:/Users/Christopher/Desktop/ING5/data analytics/project_part_1/server.r")
+source("C:/Users/Christopher/Desktop/ING5/data analytics/project_part_1/project/fonction.r")
+source("C:/Users/Christopher/Desktop/ING5/data analytics/project_part_1/project/ui.r")
+source("C:/Users/Christopher/Desktop/ING5/data analytics/project_part_1/project/server.r")
 
 shinyApp(ui, server)

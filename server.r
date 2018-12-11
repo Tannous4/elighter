@@ -18,16 +18,47 @@ server <- function(input, output, session){
         dflog$TimeFormat <<-dmy_hm(dflog$Time)
         dflog$HourInput <<-hour(dflog$TimeFormat)
         dflog$MinuteInput <<- minute(dflog$TimeFormat)
+        dflog$WDay <<- wday(dflog$TimeInput)
         dflog$PartDay <<- "morning"
         dflog$PartDay[which(dflog$HourInput >= 9 & dflog$HourInput < 12)] <<- "work"
         dflog$PartDay[which(dflog$HourInput >= 14 & dflog$HourInput < 18)] <<- "work"
         dflog$PartDay[which(dflog$HourInput >= 12 & dflog$HourInput < 14)] <<- "lunch"
         dflog$PartDay[which(dflog$HourInput >= 18 & dflog$HourInput <= 23)] <<- "home"
         dflog$PartDay[which(dflog$HourInput >= 0 & dflog$HourInput < 5)] <<- "night"
+        dflog$Week <<- (-1)
+        for(name in unique(dflog$User)){
+          Date<-dflog$TimeInput[order(dflog$TimeInput) & dflog$User == name][1]
+          dflog$Week[which(dflog$User == name)]<<- trunc(difftime(dflog$TimeInput[which(dflog$User == name)],dflog$TimeInput[which(dflog$User == name & dflog$TimeInput == Date)],units = "week"),0)
+        }
+        
         #We only select the logs of people who have responded to the survey 
         dfAll <<- merge(dflog, dfsurvey, by.x = "User", by.y = "Name")
         head(dfAll)
+        
+        # dfstats
+        dfstats<<-dflog[,c("User","Week")]
+        dfstats$temp<<-1
+        dfstats<<-dfstats%>%
+          group_by(User, Week) %>%
+          summarise(sum=sum(temp))
+        dfstats$sum<<-NULL
+        dfstats$engagement<<-1
+        dfstats$nbcig<<-0
+        dfstats$progress<<-0
+        dfstats$progressrate<<-0
+        
+        # source("C:/Users/Christopher/Desktop/ING5/data analytics/project_part_1/fonction.r")
+        
+        for(user in dfstats$User){
+          dfstats<<-Engagement_perWeek(dfstats,user)
+        }
+        dfstats<<-nbcigarettes(dflog,dfstats)
+        dfstats<<-checkengagement(dfstats)
+        dfstats<<-progressfunction(dfstats)
+        dfstats<<-progressratefunction(dfstats)
+        
         updateSelectInput(session, "userChoice", choices = dfAll$User)
+        updateSelectInput(session, "weekChoice", choices = sort(unique(dfstats$Week)))
       },
       error = function(e) {
         # return a safeError if a parsing error occurs
