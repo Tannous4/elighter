@@ -545,11 +545,27 @@ mean_consumption_std_weekday <- function (dflog){
   }
   
   avg <- c(round(monday/nb_weeks), round(tuesday/nb_weeks), round(wednesday/nb_weeks), round(thursday/nb_weeks), round(friday/nb_weeks), round(saturday/nb_weeks), round(sunday/nb_weeks))
-  print( monday)
-  print(mondaylist)
   std <- c(sd(mondaylist), sd(tuesdaylist), sd(wednesdaylist), sd(thursdaylist), sd(fridaylist), sd(saturdaylist), sd(sundaylist))
   result <- data.frame("Mean"=avg, "Std"= std)
   
+}
+
+### Cigarettes per weekday per time slots
+ALL_cigarettes_per_WDAY_per_TS <- function(dflog){
+  nb_weeks<- length(unique(dflog$Week))
+  all_weeks <- unique(dflog$Week)
+  
+  nb_users <- length(unique(dflog$User))
+  all_users <- unique(dflog$User)
+  result <-  matrix (rep(0, 7*12), 7, 12)
+  
+  for (i in 1:nb_weeks){
+    for (u in 1:nb_users){
+      week_consumption <- Cigarette_perWD_perTS(dflog, all_weeks[i], all_users[u])
+      result <- result + week_consumption 
+    }
+  }
+  return(result) 
 }
 
 #######################################################################

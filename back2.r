@@ -193,6 +193,10 @@ AvgMoneySaved <- avg_money(dflog ,dfstats)
 
 MeanStdCigarette <- mean_consumption_std_weekday (dflog)
 
+### Cigarettes per weekday per time slots
+
+CigPerWdayPerTsRes <- ALL_cigarettes_per_WDAY_per_TS(dflog)
+
 ##################################################################################
 ### Engagement Overall
 
