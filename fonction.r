@@ -85,7 +85,7 @@ progressratefunction <- function(dfstats){
     for(week in dfstats$Week[which(dfstats$User == name)]){
       ProgressRate <- 0
       Progress<-dfstats$progress[which(dfstats$User == name & dfstats$Week == week)]
-      if(abs(Progress) > 0){
+      if(length(Progress) > 0){
         ProgressLast <- dfstats$progress[which(dfstats$User == name & dfstats$Week == week-1)]
         if(length(ProgressLast)>0){
           if(abs(ProgressLast) > 0){
@@ -572,7 +572,7 @@ ALL_cigarettes_per_WDAY_per_TS <- function(dflog){
   return(result) 
 }
 
-
+### Progress all user
 progressalluser<-function(dfstats){
   week<-sort(unique(dfstats$Week))
   prog<-c()
@@ -582,9 +582,34 @@ progressalluser<-function(dfstats){
   }
   dfprogall<-data.frame(week,prog)
   dfprogall<-na.omit(dfprogall)
+  dfprogall$prog[which(dfprogall$prog < 0.001)]<-0
   return(dfprogall)
 }
 
+### Progress rate all user
+progressratealluser<-function(dfprog,dfstats){
+  week<-sort(unique(dfstats$Week))
+  prograte<-c()
+  temp<-0
+  for(w in week){
+    prog<-dfprog$prog[which(dfprog$week == w)]
+    proglast<-dfprog$prog[which(dfprog$week == w-1)]
+    if(length(proglast)>0){
+      if(abs(proglast)>0){
+        temp<-(prog-proglast)/abs(proglast)
+      }else if(length(dfprog$prog[which(dfprog$week == w-2)])>0){
+        if(abs(dfprog$prog[which(dfprog$week == w-2)])>0){
+          proglast<-dfprog$prog[which(dfprog$week == w-2)]
+          temp<-(prog-proglast)/abs(proglast)
+        }
+      }
+    }
+    prograte<-c(prograte,temp)
+  }
+  dfprograte<-data.frame(week,prograte)
+  dfprograte<-na.omit(dfprograte)
+  return(dfprograte)
+}
 
 #######################################################################
 #Engagement Overall

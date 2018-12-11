@@ -198,6 +198,10 @@ CigPerWdayPerTsRes <- ALL_cigarettes_per_WDAY_per_TS(dflog)
 
 dfprogall<-progressalluser(dfstats)
 
+### Overall Progress Rate
+
+dfprograteall<-progressratealluser(dfprogall,dfstats)
+
 ########################################################
 ### Engagement Overall
 
