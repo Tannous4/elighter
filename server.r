@@ -58,8 +58,12 @@ server <- function(input, output, session){
         dfstats<<-progressratefunction(dfstats)
         
         updateSelectInput(session, "userChoice", choices = dfAll$User)
-        updateSelectInput(session, "weekChoice", choices = sort(unique(dfstats$Week)))
         updateSelectInput(session, "suadmodeChoice", choices = unique(dflog$Type))
+        updateSelectInput(session, "suweselectmode", choices = unique(dflog$Type))
+        updateSelectInput(session, "suweselectwday", choices = c(1,2,3,4,5,6,7))
+        updateSelectInput(session, "suweselectweek", choices = c("ALL",sort(unique(dflog$Week))))
+        updateSelectInput(session, "auclselectwday", choices = c(1,2,3,4,5,6,7))
+        
         
       },
       error = function(e) {
@@ -882,7 +886,58 @@ server <- function(input, output, session){
   ####################################################################
   ## Single User Week Tab
   
+  output$suweslot <- renderPlotly({
+    req(input$file1)
+    req(input$file2)
+    df<-cigperwday(dflog,input$userChoice,input$suweselectwday)
+    p<-plot_ly(df,
+               x=~slot,
+               y=~result,
+               name="consumption",
+               type="bar"
+    )
+    p <- layout(p, xaxis = list(categoryarray = ~slot, categoryorder = "array"))
+    p
+  })
   
+  output$suweweek <- renderPlotly({
+    req(input$file1)
+    req(input$file2)
+    df<-avgcigperweek(dflog, input$userChoice)
+    p<-plot_ly(df,
+               x=~week,
+               y=~avgcons,
+               name="consumption",
+               type="bar"
+    )
+    p
+  })
+  
+  output$suwemode <- renderPlotly({
+    req(input$file1)
+    req(input$file2)
+    df<-modeusageperweek(dflog,input$userChoice,input$suweselectmode)
+    p<-plot_ly(df,
+               x=~week,
+               y=~nbmode,
+               name="consumption",
+               type="bar"
+    )
+    p
+  })
+  
+  output$suweday <- renderPlotly({
+    req(input$file1)
+    req(input$file2)
+    df<-consperwday(dflog, input$userChoice, input$suweselectweek)
+    p<-plot_ly(df,
+               x=~weekday,
+               y=~cons,
+               name="consumption",
+               type="bar"
+    )
+    p
+  })
   ####################################################################
   ## Single User Engagement Tab
   output$suenperday <- renderPlotly({
@@ -981,6 +1036,60 @@ server <- function(input, output, session){
   #######################################################################
   ## All User Classic Tab
   
+  output$auclmeanstd <- renderPlotly({
+    req(input$file1)
+    req(input$file2)
+    df<-meanstdconsweekday(dflog)
+    p<-plot_ly(df,
+               x=~day,
+               y=~meancon,
+               error_y = ~list(array=stdcon,
+                               color = '#000000'),
+               name="mean",
+               type="bar")
+    p
+  })
+  
+  output$auclslot <- renderPlotly({
+    req(input$file1)
+    req(input$file2)
+    df<-cigperwdayall(dflog,input$auclselectwday)
+    p<-plot_ly(df,
+               x=~slot,
+               y=~result,
+               name="consumption",
+               type="bar"
+    )
+    p <- layout(p, xaxis = list(categoryarray = ~slot, categoryorder = "array"))
+    p
+  })
+  
+  output$auclprogress <- renderPlotly({
+    req(input$file1)
+    req(input$file2)
+    df<-progressalluser(dfstats)
+    p<-plot_ly(df,
+               x=~week,
+               y=~prog,
+               name="progress",
+               type="bar"
+      )
+    p
+  })
+  
+  output$auclprogressrate <- renderPlotly({
+    req(input$file1)
+    req(input$file2)
+    df<-progressalluser(dfstats)
+    df2<-progressratealluser(df,dfstats)
+    p<-plot_ly(df2,
+               x=~week,
+               y=~prograte,
+               name="progress rate",
+               type="bar"
+    )
+    p
+  })
   
   #######################################################################
   ## All User Engagement Tab

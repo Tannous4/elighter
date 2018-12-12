@@ -17,8 +17,7 @@ ui<- dashboardPage(
               accept = c(".xlsx")
               
     ),
-    selectInput("userChoice", "Please choose a user: ", ""),
-    selectInput("weekChoice", "Please choose a week: ", "")
+    selectInput("userChoice", "Please choose a user: ", "")
   ),
   dashboardBody(
     tabItems(
@@ -64,8 +63,21 @@ ui<- dashboardPage(
                      )
                    )
           ),
-          tabPanel(title="Classic"
-            
+          tabPanel(title="Classic",
+                   fluidRow(box(title="mean & std consumption per weekday", status = "danger", solidHeader = TRUE, width = 12,
+                                plotlyOutput("auclmeanstd"))),
+                   fluidRow(
+                     box(title = "Cigarette consumption per slot per weekday",status = "success", solidHeader = TRUE, width = 9,
+                         plotlyOutput("auclslot")),
+                     box(title="Select the Day", background = "green", width = 3,
+                         selectInput("auclselectwday", "Please choose a day: ", "")
+                     )
+                   ),
+                   fluidRow(box(title=" Average Progress", status = "warning", solidHeader = TRUE, width = 12,
+                                plotlyOutput("auclprogress"))),
+                   fluidRow(box(title="Average Progress Rate", status = "info", solidHeader = TRUE, width = 12,
+                                plotlyOutput("auclprogressrate")))
+
           ),
           tabPanel(title="Engagement",
                    fluidRow(box(title= "Average Engagement per week", status = "warning", solidHeader = TRUE, width = 12,
@@ -180,7 +192,33 @@ ui<- dashboardPage(
                      )
                    )
           ),
-          tabPanel(title="Week"
+          tabPanel(title="Week",
+                   fluidRow(
+                     box(title = "Cigarette consumption per time slot per weekday",status = "warning", solidHeader = TRUE, width = 9,
+                         plotlyOutput("suweslot")),
+                     box(title="Select the day", background = "yellow", width = 3,
+                         selectInput("suweselectwday", "Please choose a day: ", "")
+                     )
+                   ),
+                   fluidRow(
+                     box(title = "Cigarette consumption per week",status="danger", solidHeader = TRUE, width = 12,
+                         plotlyOutput("suweweek"))
+                   ),
+
+                   fluidRow(
+                     box(title="Select the mode", background = "green", width = 3,
+                         selectInput("suweselectmode", "Please choose a day: ", "")),
+                     box(title = "Cigarette consumption per week per mode",status = "success", solidHeader = TRUE, width = 9,
+                         plotlyOutput("suwemode"))
+                   ),
+                   fluidRow(
+                     box(title = "Cigarette consumption per day per week",status = "info", solidHeader = TRUE, width = 9,
+                         plotlyOutput("suweday")),
+                     box(title="Select the week", background = "aqua", width = 3,
+                         selectInput("suweselectweek", "Please choose a week: ", "")
+                     )
+                   )
+          
                    
           ),
           tabPanel(title="Engagement",

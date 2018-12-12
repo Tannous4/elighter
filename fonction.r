@@ -217,7 +217,7 @@ meancons <- function(dflog, inputPerson){
   weekday<-c(1,2,3,4,5,6,7)
   cons<-c()
   for(d in weekday){
-    temp<-length(which(dflog$User == inputPerson  & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$WDay == d))/length(unique(dflog$TimeInput[which(dflog$User == inputPerson  & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$WDay == d)]))
+    temp<-length(which(dflog$User == inputPerson  & (dflog$Type == "On time" | dflog$Type == "Cheated" | dflog$Type == "Behaviour") & dflog$WDay == d))/length(unique(dflog$TimeInput[which(dflog$User == inputPerson  & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$WDay == d)]))
     cons<-c(cons,temp)
   }
   dfcons<-data.frame(weekday,cons)
@@ -230,8 +230,8 @@ stdcons <- function(dflog, inputPerson){
   cons<-c()
   for(d in weekday){
     temp<-c()
-    for(date in unique(dflog$TimeInput[which(dflog$User == inputPerson  & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$WDay == d)])){
-      temp<-c(temp,length(which(dflog$User == inputPerson  & (dflog$Type == "On time" | dflog$Type == "Cheated") & dflog$WDay == d & dflog$TimeInput == date)))
+    for(date in unique(dflog$TimeInput[which(dflog$User == inputPerson  & (dflog$Type == "On time" | dflog$Type == "Cheated" | dflog$Type == "Behaviour") & dflog$WDay == d)])){
+      temp<-c(temp,length(which(dflog$User == inputPerson  & (dflog$Type == "On time" | dflog$Type == "Cheated" | dflog$Type == "Behaviour") & dflog$WDay == d & dflog$TimeInput == date)))
     }
     cons<-c(cons,sd(temp))
   }
@@ -242,9 +242,9 @@ stdcons <- function(dflog, inputPerson){
 ###################################################################
 #Cigarette per weekday per time slot
 
-stat_day <- function(dflog,inputUser,weekday){
+cigperwday <- function(dflog,inputPerson,weekday){
   slot<-c("OH - 2H","2H - 4H","4H - 6H","6H - 8H","8H - 10H","10H - 12H","12H - 14H","14H - 16H","16H - 18H","18H - 20H","20H - 22H","22H - 0H")
-  dfWeek <- dflog[which(dflog$User == inputPerson & dflog$Week == inputWeek & (dflog$Type == "Cheated" | dflog$Type == "On time" | dflog$Type == "Behaviour")),]
+  dfWeek <- dflog[which(dflog$User == inputPerson & (dflog$Type == "Cheated" | dflog$Type == "On time" | dflog$Type == "Behaviour")),]
   result <- c()
   result <-c(length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 0 & dfWeek$HourInput < 2)]),
              length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 2 & dfWeek$HourInput < 4)]),
@@ -263,115 +263,48 @@ stat_day <- function(dflog,inputUser,weekday){
   return(dfslot)
 }
 
-# Cigarette_perWD_perTS <- function(dflog, inputWeek, inputPerson){
-#   result <- c()
-#   
-#   if (inputWeek ==0){
-#     dfWeek <- dflog[which(dflog$User == inputPerson & dflog$Week == inputWeek & dflog$Type == "Behaviour"),]
-#     
-#     #in case we are in behavior week 
-#     monday <- stat_day(1, dfWeek )
-#     tuesday <- stat_day(2, dfWeek)
-#     wednesday<- stat_day(3 , dfWeek)
-#     thursday <- stat_day(4, dfWeek)
-#     friday <- stat_day(5, dfWeek)
-#     saturday <- stat_day(6, dfWeek)
-#     sunday <- stat_day(7, dfWeek)
-#     
-#     result <- c(monday, tuesday, wednesday, thursday, friday, saturday, sunday )
-#     
-#   }else{
-#     
-#     dfWeek <- dflog[which(dflog$User == inputPerson & dflog$Week == inputWeek & (dflog$Type == "Cheated" | dflog$Type == "On time")),]
-#     
-#     monday <- stat_day(1, dfWeek)
-#     tuesday <- stat_day(2, dfWeek)
-#     wednesday<- stat_day(3, dfWeek)
-#     thursday <- stat_day(4, dfWeek)
-#     friday <- stat_day(5, dfWeek)
-#     saturday <- stat_day(6, dfWeek)
-#     sunday <- stat_day(7, dfWeek)
-#     
-#     result <- c(monday, tuesday, wednesday, thursday, friday, saturday, sunday )
-#   }
-#   
-#   matrix_res <- matrix(result, nrow=7, ncol=12, byrow=T)
-#   return(matrix_res)
-# }
+avgcigperweek<-function(dflog, inputUser){
+  df<-dflog[which(dflog$User == inputUser),c("User","Week")]
+  df$temp<-1
+  df<-df%>%
+    group_by(User, Week) %>%
+    summarise(sum=sum(temp))
+  df$sum<-NULL
+  df$nbcig<-0
+  df<-nbcigarettes(dflog,df)
+  avgcons<-c()
+  week<-sort(unique(df$Week))
+  for(w in week){
+    avgcons<-c(avgcons,(df$nbcig[which(df$Week == w)])/7)
+  }
+  dfcons<-data.frame(week,avgcons)
+  return(dfcons)
+}
 
-### Comparision of cigarettes consumption between weeks
-# Consumption_Between_Weeks <- function(dflog, inputPerson){
-#   nb_weeks <- length(unique(dflog$Week[which(dflog$User == inputPerson)]))
-#   weeks <- sort(unique(dflog$Week[which(dflog$User == inputPerson)]))
-#   result <- c()
-#   
-#   for (i in 0:(nb_weeks-1)){
-#     avg <- 0
-#       dfWeek <- dflog[which(dflog$User == inputPerson & dflog$Week == i & (dflog$Type == "Cheated" | dflog$Type == "On time" | dflog$Type == "Behaviour")),]
-#     sum_week <-0
-#     for (d in 1:7){
-#       sum_week <- sum_week + length(which())
-#     }
-#     avg <- round(sum_week/7)
-#     result <- c(result, avg)
-#   }
-#   result <- data.frame("Week"= weeks, "Mean"= result)
-#   return(result)
-# }
-# 
-# ### Mode usage per week 
-# Mode_Usage_Per_Week <- function(dflog, inputPerson, inputMode){
-#   nb_weeks <- length(unique(dflog$Week[which(dflog$User == inputPerson)]))
-#   weeks <- unique(dflog$Week[which(dflog$User == inputPerson)])
-#   result <- c()
-#   
-#   for (i in 0:(nb_weeks-1)){
-#     dfWeek <- dflog[which(dflog$User == inputPerson & dflog$Week == i & dflog$Type == inputMode),]
-#     sum_week <-0
-#     for (d in 1:7){
-#       sum_week <- sum_week + sum(stat_day(d,dfWeek ))
-#     }
-#     result <- c(result, sum_week)
-#   }
-#   result <- data.frame("Week"= weeks, "ModeNumber"= result )
-#   return(result)
-# }
-# 
-# ### Cigarette Consumption per weekday
-# Cigarette_Consumption_perWD <- function(dflog, inputWeek, inputPerson) {
-#   result <- c()
-#   
-#   if (inputWeek ==0){
-#     dfWeek <- dflog[which(dflog$User == inputPerson & dflog$Week == inputWeek & dflog$Type == "Behaviour"),]
-#     
-#     #in case we are in behavior week 
-#     monday <- sum(stat_day(1, dfWeek ))
-#     tuesday <- sum(stat_day(2, dfWeek))
-#     wednesday<- sum(stat_day(3 , dfWeek))
-#     thursday <- sum(stat_day(4, dfWeek))
-#     friday <- sum(stat_day(5, dfWeek))
-#     saturday <- sum(stat_day(6, dfWeek))
-#     sunday <- sum(stat_day(7, dfWeek))
-#     
-#     result <- c(monday, tuesday, wednesday, thursday, friday, saturday, sunday )
-#     
-#   }else{
-#     
-#     dfWeek <- dflog[which(dflog$User == inputPerson & dflog$Week == inputWeek & (dflog$Type == "Cheated" | dflog$Type == "On time")),]
-#     
-#     monday <- sum(stat_day(1, dfWeek))
-#     tuesday <- sum(stat_day(2, dfWeek))
-#     wednesday<- sum(stat_day(3, dfWeek))
-#     thursday <- sum(stat_day(4, dfWeek))
-#     friday <- sum(stat_day(5, dfWeek))
-#     saturday <- sum(stat_day(6, dfWeek))
-#     sunday <- sum(stat_day(7, dfWeek))
-#     
-#     result <- c(monday, tuesday, wednesday, thursday, friday, saturday, sunday )
-#   }
-#   result <- data.frame("Day"= c("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday" ), "Consumption"= result)
-#   return(result)
-# }
+modeusageperweek<-function(dflog,inputPerson,inputMode){
+  week<-sort(unique(dflog$Week[which(dflog$User==inputPerson)]))
+  nbmode<-c()
+  for(w in week){
+    nbmode<-c(nbmode,length(which(dflog$User == inputPerson & dflog$Type == inputMode & dflog$Week == w)))
+  }
+  dfmode<-data.frame(week,nbmode)
+  return(dfmode)
+}
+
+consperwday<-function(dflog, inputPerson, inputWeek){
+  weekday<-c(1,2,3,4,5,6,7)
+  cons<-c()
+  if(inputWeek == "ALL"){
+    df<-dflog
+  }else{
+    df<-dflog[which(dflog$Week == as.numeric(inputWeek)),]
+  }
+  for(d in weekday){
+    cons<-c(cons,length(which(df$User == inputPerson  & (df$Type == "On time" | df$Type == "Cheated" | df$Type == "Behaviour") & df$WDay == d)))
+  }
+  dfcons<-data.frame(weekday,cons)
+  return(dfcons)
+}
 
 ######################################################################################
 ### 4 Engagement tab 
@@ -467,17 +400,6 @@ total_number_of_cigarettes_saved <- function(dfstats){
   return(sum_cig_saved)
 }
 
-### Total Number of Money saved
-total_number_of_money_saved <- function(dflog,dfstats){
-  nb_users <- length(unique(dflog$User))
-  all_users <- unique(dflog$User)
-  sum_money_saved <-0
-  for (i in 1:nb_users){
-    sum_money_saved <- sum_money_saved + CigarettesSaved(dfstats,all_users[i])
-  }
-  return(sum_money_saved)
-}
-
 ### Avg number of saved cigarettes
 avg_nb_cig <- function (dfstats){
   nb_users <- length(unique(dfstats$User))
@@ -487,91 +409,48 @@ avg_nb_cig <- function (dfstats){
   return(avg)
 }
 
-### Average amount of money saved
-avg_money <- function (dflog,dfstats){
-  nb_users <- length(unique(dflog$User))
-  total<-total_number_of_money_saved (dflog,dfstats)
-
-  avg <- round(total/nb_users)
-  return(avg)
-}
-
 #######################################################################
 ### Classic
 ### Mean and std of cigarette consumption per weekday
-mean_consumption_std_weekday <- function (dflog){
-  nb_weeks<- length(unique(dflog$Week))
-  all_weeks <- unique(dflog$Week)
-  
-  nb_users <- length(unique(dflog$User))
-  all_users <- unique(dflog$User)
-  avg <- c()
-  std<- c()
-  monday <- 0
-  tuesday <- 0
-  wednesday<- 0
-  thursday <- 0
-  friday <- 0
-  saturday <- 0
-  sunday <- 0
-  
-  mondaylist <- c()
-  tuesdaylist <- c()
-  wednesdaylist<- c()
-  thursdaylist <- c()
-  fridaylist <- c()
-  saturdaylist <- c()
-  sundaylist <- c()
-  
-  for (i in 1:nb_weeks){
-    #for (u in 1:nb_users){
-    #dfWeek <- dflog[which(dflog$User == all_users[u] & (dflog$Type == "Cheated" | dflog$Type == "On time" | dflog$Type == "Behaviour")),]
-    dfWeek <- dflog[which(dflog$Type == "Cheated" | dflog$Type == "On time" | dflog$Type == "Behaviour"),]
-    if (length(dfWeek[which(dfWeek$Week == all_weeks[i]),])>0){
-      dfWeek2 <- dfWeek[which(dfWeek$Week == all_weeks[i]),]
-      monday <- monday + sum(stat_day(1, dfWeek2))
-      tuesday <- tuesday + sum(stat_day(2, dfWeek2))
-      wednesday<- wednesday + sum(stat_day(3, dfWeek2))
-      thursday <- thursday + sum(stat_day(4, dfWeek2))
-      friday <- friday + sum(stat_day(5, dfWeek2))
-      saturday <- saturday + sum(stat_day(6, dfWeek2))
-      sunday <- sunday + sum(stat_day(7, dfWeek2))
-      
-      mondaylist <- c(mondaylist, sum(stat_day(1, dfWeek2)))
-      tuesdaylist <- c(tuesdaylist, sum(stat_day(2, dfWeek2)))
-      wednesdaylist <- c(wednesdaylist, sum(stat_day(3, dfWeek2)))
-      thursdaylist <- c(thursdaylist, sum(stat_day(4, dfWeek2)))
-      fridaylist <- c(fridaylist, sum(stat_day(5, dfWeek2)))
-      saturdaylist <- c(saturdaylist, sum(stat_day(6, dfWeek2)))
-      sundaylist <- c(sundaylist, sum(stat_day(7, dfWeek2)))
+meanstdconsweekday<-function(dflog){
+  name<-unique(dflog$User)
+  wday<-c(1,2,3,4,5,6,7)
+  day<-c()
+  meancon<-c()
+  stdcon<-c()
+  for(wd in wday){
+    day<-c(day,wd)
+    val<-c()
+    for(u in name){
+      val<-c(val,length(which(dflog$User==u & dflog$WDay == wd & (dflog$Type == "Cheated" | dflog$Type == "On time" | dflog$Type == "Behaviour")))/length(unique(dflog$Week[which(dflog$User==u & dflog$WDay == wd & (dflog$Type == "Cheated" | dflog$Type == "On time" | dflog$Type == "Behaviour"))])))
     }
-    
-    #}
-    
+    val<-na.omit(val)
+    meancon<-c(meancon,mean(val))
+    stdcon<-c(stdcon,sd(val))
   }
-  
-  avg <- c(round(monday/nb_weeks), round(tuesday/nb_weeks), round(wednesday/nb_weeks), round(thursday/nb_weeks), round(friday/nb_weeks), round(saturday/nb_weeks), round(sunday/nb_weeks))
-  std <- c(sd(mondaylist), sd(tuesdaylist), sd(wednesdaylist), sd(thursdaylist), sd(fridaylist), sd(saturdaylist), sd(sundaylist))
-  result <- data.frame("Mean"=avg, "Std"= std)
-  
+  df<-data.frame(day,meancon,stdcon)
+  return(df)
 }
 
-### Cigarettes per weekday per time slots
-ALL_cigarettes_per_WDAY_per_TS <- function(dflog){
-  nb_weeks<- length(unique(dflog$Week))
-  all_weeks <- unique(dflog$Week)
-  
-  nb_users <- length(unique(dflog$User))
-  all_users <- unique(dflog$User)
-  result <-  matrix (rep(0, 7*12), 7, 12)
-  
-  for (i in 1:nb_weeks){
-    for (u in 1:nb_users){
-      week_consumption <- Cigarette_perWD_perTS(dflog, all_weeks[i], all_users[u])
-      result <- result + week_consumption 
-    }
-  }
-  return(result) 
+cigperwdayall <- function(dflog,weekday){
+  slot<-c("OH - 2H","2H - 4H","4H - 6H","6H - 8H","8H - 10H","10H - 12H","12H - 14H","14H - 16H","16H - 18H","18H - 20H","20H - 22H","22H - 0H")
+  dfWeek <- dflog[which((dflog$Type == "Cheated" | dflog$Type == "On time" | dflog$Type == "Behaviour")),]
+  result <- c()
+  result <-c(length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 0 & dfWeek$HourInput < 2)]),
+             length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 2 & dfWeek$HourInput < 4)]),
+             length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 4 & dfWeek$HourInput < 6)]),
+             length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 6 & dfWeek$HourInput < 8)]),
+             length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 8 & dfWeek$HourInput< 10)]),
+             length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 10 & dfWeek$HourInput < 12)]),
+             length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 12 & dfWeek$HourInput < 14)]),
+             length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 14 & dfWeek$HourInput < 16)]),
+             length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 16 & dfWeek$HourInput < 18)]),
+             length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 18 & dfWeek$HourInput < 20)]),
+             length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 20 & dfWeek$HourInput < 22)]),
+             length(dfWeek$User[which(dfWeek$WDay== weekday & dfWeek$HourInput >= 22 & dfWeek$HourInput <= 23)]))
+  dfslot<-data.frame(slot,result)
+  dfslot<-na.omit(dfslot)
+  return(dfslot)
 }
 
 ### Progress all user
