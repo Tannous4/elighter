@@ -788,4 +788,125 @@ server <- function(input, output, session){
       color = "yellow", width = 3
     )
   })
+  
+  ####################################################################
+  ## Single User Classic Tab
+  
+  output$suclcigcons <- renderPlotly({
+    req(input$file1)
+    req(input$file2)
+    df<-cigconsumption(dflog,input$userChoice)
+    p<-plot_ly(df,
+      x=~weekday,
+      y=~cons,
+      name="consumption",
+      type="bar"
+    )
+    p
+  })
+  output$suclcigconsrep<-renderPlotly({
+    req(input$file1)
+    req(input$file2)
+    days<-c("weekdays","weekends")
+    cons<-c(cigconsumptionwday(dflog,input$userChoice),cigconsumptionwend(dflog,input$userChoice))
+    p <- plot_ly(labels = days, values = cons, type = 'pie') %>%
+      layout(
+             xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+             yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+    p
+  })
+  
+  output$suclcigcons7 <- renderValueBox({
+    req(input$file1)
+    req(input$file2)
+    valueBox(
+      cigconsumption7(dfstats,input$userChoice), "Consumption last Week", icon = icon("user"),
+      color = "blue"
+    )
+  })
+  
+  output$suclcigconsmean <- renderPlotly({
+    req(input$file1)
+    req(input$file2)
+    df<-meancons(dflog,input$userChoice)
+    p<-plot_ly(df,
+               x=~weekday,
+               y=~cons,
+               name="consumption",
+               type="bar"
+    )
+    p
+  })
+  
+  output$suclcigconsstd <- renderPlotly({
+    req(input$file1)
+    req(input$file2)
+    df<-stdcons(dflog,input$userChoice)
+    p<-plot_ly(df,
+               x=~weekday,
+               y=~cons,
+               name="consumption",
+               type="bar"
+    )
+    p
+  })
+  
+  output$suclprogress <- renderPlotly({
+    req(input$file1)
+    req(input$file2)
+    df<-dfstats[which(dfstats$User == input$userChoice), ]
+    p<-plot_ly(df,
+               x=~Week,
+               y=~progress,
+               name="consumption",
+               type="bar"
+    )
+    p
+  })
+  
+  output$suclprogressrate <- renderPlotly({
+    req(input$file1)
+    req(input$file2)
+    df<-dfstats[which(dfstats$User == input$userChoice), ]
+    p<-plot_ly(df,
+               x=~Week,
+               y=~progressrate,
+               name="consumption",
+               type="bar"
+    )
+    p
+  })
+  
+  ####################################################################
+  ## Single User Week Tab
+  
+  
+  ####################################################################
+  ## Single User Engagement Tab
+  output$suenperday <- renderPlotly({
+    req(input$file1)
+    req(input$file2)
+    df<-Engagement_perDay(dflog,input$userChoice)
+    p<-plot_ly(df,
+               x=~Day,
+               y=~Engagement,
+               name="engagement",
+               mode="lines+markers"
+    )
+    p
+  })
+  
+  output$suenperweek <- renderPlotly({
+    req(input$file1)
+    req(input$file2)
+    df<-dfstats[which(dfstats$User == input$userChoice), ]
+    p<-plot_ly(df,
+               x=~Week,
+               y=~engagement,
+               name="engagement",
+               type="bar"
+    )
+    p
+  })
+  
 }

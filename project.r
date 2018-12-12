@@ -6,13 +6,12 @@ library(ggmap)
 library(ggpubr)
 library(readxl)
 library(lubridate)
-library(arules)
-library(arulesViz)
 library(leaflet)
 library(knitr)
 library(plyr)
 library(dplyr)
 library(tidyr)
+library(plotly)
 
 # Shiny App
 

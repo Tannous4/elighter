@@ -119,39 +119,71 @@ ui<- dashboardPage(
             )
           ),
           tabPanel(title="Info",
-                   fluidRow(
-                     valueBoxOutput("suname"),
-                     valueBoxOutput("suage"),
-                     valueBoxOutput("suagecgy")
-                   ),
-                   fluidRow(
-                     valueBoxOutput("sumoneysaved"),
-                     valueBoxOutput("sucigsaved")
-                   ),
-                   fluidRow(
-                     valueBoxOutput("suoverallprog"),
-                     valueBoxOutput("suoverallprogcgy"),
-                     valueBoxOutput("subestprograte"),
-                     valueBoxOutput("suoverallengagement")
-                   ),
-                   fluidRow(
-                     valueBoxOutput("sumeanconscig"),
-                     valueBoxOutput("sumeanconscigwday"),
-                     valueBoxOutput("sumeanconscigwend"),
-                     valueBoxOutput("sumeanconscigslot"),
-                     valueBoxOutput("sumeanconscigslotval")
+                   fluidPage(
+                     fluidRow(
+                       valueBoxOutput("suname"),
+                       valueBoxOutput("suage"),
+                       valueBoxOutput("suagecgy")
+                     ),
+                     fluidRow(
+                       valueBoxOutput("sumoneysaved"),
+                       valueBoxOutput("sucigsaved")
+                     ),
+                     fluidRow(
+                       valueBoxOutput("suoverallprog"),
+                       valueBoxOutput("suoverallprogcgy"),
+                       valueBoxOutput("subestprograte"),
+                       valueBoxOutput("suoverallengagement")
+                     ),
+                     fluidRow(
+                       valueBoxOutput("sumeanconscig"),
+                       valueBoxOutput("sumeanconscigwday"),
+                       valueBoxOutput("sumeanconscigwend"),
+                       valueBoxOutput("sumeanconscigslot"),
+                       valueBoxOutput("sumeanconscigslotval")
+                     )
                    )
-                   
             
           ),
-          tabPanel(title="Classic"
-                   
+          tabPanel(title="Classic",
+                   fluidRow(
+                     box(title = "Cigarettes consumption per weekday", status="primary", solidHeader = TRUE,
+                         plotlyOutput("suclcigcons")
+                     ),
+                     box(title = "Cigarettes consumption repartition", status="primary", solidHeader = TRUE, 
+                         plotlyOutput("suclcigconsrep")
+                     ),
+                     valueBoxOutput("suclcigcons7")
+                   ),
+                   fluidRow(
+                     box(title = "Mean of Cigarettes consumption per weekday",status="warning", solidHeader = TRUE,
+                         plotlyOutput("suclcigconsmean")
+                     ),
+                     box(title = "Std of Cigarettes consumption per weekday",status="warning", solidHeader = TRUE,
+                         plotlyOutput("suclcigconsstd")
+                     )
+                   ),
+                   fluidRow(
+                     box(title = "Progress per week",status="danger", solidHeader = TRUE,
+                         plotlyOutput("suclprogress")
+                     ),
+                     box(title = "Progress rate per week",status="danger", solidHeader = TRUE,
+                         plotlyOutput("suclprogressrate")
+                     )
+                   )
           ),
           tabPanel(title="Week"
                    
           ),
-          tabPanel(title="Engagement"
-                   
+          tabPanel(title="Engagement",
+                   fluidRow(box(title= "Engagement per day", status = "danger", solidHeader = TRUE, width = 12,
+                                plotlyOutput("suenperday")
+                     
+                   )),
+                   fluidRow(box(title= "Engagement per week", status = "warning", solidHeader = TRUE, width = 12,
+                                plotlyOutput("suenperweek")
+                                
+                   ))
           ),
           tabPanel(title="AllDays"
                    
