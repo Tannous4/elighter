@@ -59,6 +59,8 @@ server <- function(input, output, session){
         
         updateSelectInput(session, "userChoice", choices = dfAll$User)
         updateSelectInput(session, "weekChoice", choices = sort(unique(dfstats$Week)))
+        updateSelectInput(session, "suadmodeChoice", choices = unique(dflog$Type))
+        
       },
       error = function(e) {
         # return a safeError if a parsing error occurs
@@ -784,7 +786,7 @@ server <- function(input, output, session){
     req(input$file2)
     dfslot<-mostsmokingslot(dflog, input$userChoice)
     valueBox(
-      round(dfslot$result[which(dfslot$result == max(dfslot$result))],2), "Avg Cigarettes Max Smoking Slot", icon = icon("arrow-alt-circle-up"),
+      round(dfslot$result[which(dfslot$result == max(dfslot$result))],2), paste0("Avg Cigarettes Max Smoking Slot: ",dfslot$slot[which(dfslot$result == max(dfslot$result))]), icon = icon("arrow-alt-circle-up"),
       color = "yellow", width = 3
     )
   })
@@ -909,4 +911,93 @@ server <- function(input, output, session){
     p
   })
   
+  #######################################################################
+  ## Single User All Day
+  
+  output$suadcigcons <- renderPlotly({
+    req(input$file1)
+    req(input$file2)
+    df<-Consumption_Over_All_Period(dflog,input$userChoice)
+    p<-plot_ly(df,
+               x=~Day,
+               y=~Consumption,
+               name="consumption",
+               mode="lines+markers"
+    )
+    p
+  })
+  
+  output$suadmode <- renderPlotly({
+    req(input$file1)
+    req(input$file2)
+    df<-Mode_Usage(dflog,input$userChoice,input$suadmodeChoice)
+    p<-plot_ly(df,
+               x=~Day,
+               y=~ModeNumber,
+               name="consumption",
+               mode="lines+markers"
+    )
+    p
+  })
+  
+  #######################################################################
+  ## All User Info Tab
+  
+  output$auinmoney <- renderValueBox({
+    req(input$file1)
+    req(input$file2)
+    valueBox(
+      paste0(total_number_of_cigarettes_saved(dfstats),"$"), "Money Saved", icon = icon("credit-card"),
+      color = "olive", width = 6
+    )
+  })
+  
+  output$auinmoneyavg <- renderValueBox({
+    req(input$file1)
+    req(input$file2)
+    valueBox(
+      paste0(round(avg_nb_cig(dfstats),2),"$"), "Average Money Saved", icon = icon("credit-card"),
+      color = "olive", width = 6
+    )
+  })
+  output$auincons <- renderValueBox({
+    req(input$file1)
+    req(input$file2)
+    valueBox(
+      total_number_of_cigarettes_saved(dfstats), "Cigarettes Saved", icon = icon("save"),
+      color = "maroon", width = 6
+    )
+  })
+  
+  output$auinconsavg <- renderValueBox({
+    req(input$file1)
+    req(input$file2)
+    valueBox(
+      round(avg_nb_cig(dfstats),2), "Average Cigarettes Saved", icon = icon("save"),
+      color = "maroon", width = 6
+    )
+  })
+  
+  #######################################################################
+  ## All User Classic Tab
+  
+  
+  #######################################################################
+  ## All User Engagement Tab
+  
+  output$auen <- renderPlotly({
+    req(input$file1)
+    req(input$file2)
+    df<-engagementoverall(dfstats)
+    p<-plot_ly(df,
+               x=~week,
+               y=~engagement,
+               name="engagement",
+               type="bar"
+    )
+    p
+  })
+
 }
+
+

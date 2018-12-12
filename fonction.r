@@ -457,9 +457,9 @@ Mode_Usage <- function(dflog,inputPerson, inputMode){
 ##################################################################################
 ### 1. Information Tab
 ### Total Number of saved cigarettes
-total_number_of_cigarettes_saved <- function(dflog,dfstats){
-  nb_users <- length(unique(dflog$User))
-  all_users <- unique(dflog$User)
+total_number_of_cigarettes_saved <- function(dfstats){
+  nb_users <- length(unique(dfstats$User))
+  all_users <- unique(dfstats$User)
   sum_cig_saved <-0
   for (i in 1:nb_users){
     sum_cig_saved <- sum_cig_saved + CigarettesSaved(dfstats,all_users[i])
@@ -479,9 +479,9 @@ total_number_of_money_saved <- function(dflog,dfstats){
 }
 
 ### Avg number of saved cigarettes
-avg_nb_cig <- function (dflog,dfstats){
-  nb_users <- length(unique(dflog$User))
-  total<-total_number_of_money_saved(dflog,dfstats)
+avg_nb_cig <- function (dfstats){
+  nb_users <- length(unique(dfstats$User))
+  total<-total_number_of_cigarettes_saved(dfstats)
 
   avg <- round(total/nb_users)
   return(avg)
@@ -622,7 +622,7 @@ engagementoverall<-function(dfstats){
   for(w in week){
     eng<-c(eng,mean(dfstats$engagement[which(dfstats$Week == w)]))
   }
-  dfengall<-data.frame(week,eng)
+  dfengall<-data.frame(week,"engagement" = eng)
   dfengall<-na.omit(dfengall)
   return(dfengall)
 }

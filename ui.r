@@ -18,7 +18,7 @@ ui<- dashboardPage(
               
     ),
     selectInput("userChoice", "Please choose a user: ", ""),
-    selectInput("weekChoice", "Please choose a user: ", "")
+    selectInput("weekChoice", "Please choose a week: ", "")
   ),
   dashboardBody(
     tabItems(
@@ -52,14 +52,26 @@ ui<- dashboardPage(
               )
             )
           ),
-          tabPanel(title="Info"
-            
+          tabPanel(title="Info",
+                   fluidPage(
+                     fluidRow(
+                       valueBoxOutput("auinmoney", width = 6),
+                       valueBoxOutput("auinmoneyavg", width = 6)
+                     ),
+                     fluidRow(
+                       valueBoxOutput("auincons", width = 6),
+                       valueBoxOutput("auinconsavg", width = 6)
+                     )
+                   )
           ),
           tabPanel(title="Classic"
             
           ),
-          tabPanel(title="Engagement"
-            
+          tabPanel(title="Engagement",
+                   fluidRow(box(title= "Average Engagement per week", status = "warning", solidHeader = TRUE, width = 12,
+                                plotlyOutput("auen")
+                                
+                   ))
           )
         )
       ),
@@ -72,9 +84,6 @@ ui<- dashboardPage(
               tabBox(
                 title=tagList(shiny::icon("user"), "User Settings"),
                 id = "tabset1", height = "200px",
-                # tabPanel("User", 
-                #          selectInput("userChoice", "Please choose a user: ", "")
-                # ),
                 tabPanel("Time",
                          dateRangeInput('dateRange',
                                         label = 'Date range input:',
@@ -126,21 +135,20 @@ ui<- dashboardPage(
                        valueBoxOutput("suagecgy")
                      ),
                      fluidRow(
-                       valueBoxOutput("sumoneysaved"),
-                       valueBoxOutput("sucigsaved")
+                       valueBoxOutput("sumoneysaved",width = 6),
+                       valueBoxOutput("sucigsaved",width = 6)
                      ),
                      fluidRow(
-                       valueBoxOutput("suoverallprog"),
-                       valueBoxOutput("suoverallprogcgy"),
-                       valueBoxOutput("subestprograte"),
-                       valueBoxOutput("suoverallengagement")
+                       valueBoxOutput("suoverallprog",width = 3),
+                       valueBoxOutput("suoverallprogcgy",width = 3),
+                       valueBoxOutput("subestprograte",width = 3),
+                       valueBoxOutput("suoverallengagement",width = 3)
                      ),
                      fluidRow(
-                       valueBoxOutput("sumeanconscig"),
-                       valueBoxOutput("sumeanconscigwday"),
-                       valueBoxOutput("sumeanconscigwend"),
-                       valueBoxOutput("sumeanconscigslot"),
-                       valueBoxOutput("sumeanconscigslotval")
+                       valueBoxOutput("sumeanconscig",width = 3),
+                       valueBoxOutput("sumeanconscigwday",width = 3),
+                       valueBoxOutput("sumeanconscigwend",width = 3),
+                       valueBoxOutput("sumeanconscigslotval",width = 3)
                      )
                    )
             
@@ -185,8 +193,20 @@ ui<- dashboardPage(
                                 
                    ))
           ),
-          tabPanel(title="AllDays"
-                   
+          tabPanel(title="AllDays",
+                   fluidRow(box(title= "Cigarettes consumption over all period", status = "danger", solidHeader = TRUE, width = 12,
+                                plotlyOutput("suadcigcons")
+                                
+                   )),
+                   fluidRow(box(title= "Mode usage over all period", status = "warning", solidHeader = TRUE, width = 12,
+                                plotlyOutput("suadmode")
+                                
+                   )),
+                   fluidRow(
+                     box(title="Select the mode", background = "yellow", width = 4,
+                      selectInput("suadmodeChoice", "Please choose a mode: ", "")
+                     )
+                   )
           )
         )
       )
